@@ -7,7 +7,7 @@ This chapter will serve predominantly to explain concepts and methods relevant t
 Depending on how we choose to transform our data set(s) each individual candidate day could be represented by feature vectors of up to 96 temporal dimensions, if not more when taking into consideration supplementary external variables. As a precursory step to our clustering algorithms we can make use of the \gls{som} to project our data onto a feature space that is much lower in terms of the overall dimensionality thus allowing us to achieve visibly clearer clusters in terms of days that express high levels of similarity in their overall energy consumption patterns.
 
 \subsection{Self-Organizing Maps}
-\label{subsec:Background-Information:Self-Organizing-Maps}
+\label{subsec:Background-Information:Dimension-Reduction:Self-Organizing-Maps}
 The neurobiologically inspired \glsentryfull{som}, also known as the Kohonen network, is a topology preserving network proposed by Teuvo Kohonen in 1982 \cite{Kohonen}. The \gls{som} belongs to the class of unsupervised learning neural networks and is predominantly used within the realm of feature detection. In contrast to traditional \glspl{ann}, that make use of error backpropagation and gradient descent, the \gls{som} applies a form of competitive learning in which the neurons of the network compete for the right to activate when presented with input data and as a result are forced to organize themselves. Within the realm of this paper, the principal objective of the \gls{som} is to transform a complex, high-dimensional input into a much simpler low-dimensional discrete output space while preserving the overall relationship of the data. Generally the projected output lies in a two-dimensional space where the spatial locations (\ie coordinates) of the neurons are indicative of inherent statistical features contained within the data \cite{Asan}.
 
 \begin{figure}[H]
@@ -33,7 +33,7 @@ The neurobiologically inspired \glsentryfull{som}, also known as the Kohonen net
 Throughout the duration of this project we will be making use of the \gls{hdbscan} clustering algorithm. This section serves to both introduce readers to the \gls{dbscan} algorithm that precedes \gls{hdbscan} as well as provide a high-level, intuitive explanation of both algorithms so that we may better understand the differences between them.
 
 \subsection{DBSCAN}
-\label{subsec:Background-Information:DBSCAN}
+\label{subsec:Background-Information:Clustering-Algorithms:DBSCAN}
 \glsentryfull{dbscan}, proposed by \citet{Ester}, is a non-parametric data clustering algorithm that works on the principle of grouping together points that are closely packed together (\ie located in high-density regions) while marking points that lie alone in low-density regions as outliers. This allows the \gls{dbscan} algorithm to find arbitrarily shaped clusters while also rendering it robust to noise present in the data. Furthermore, the \gls{dbscan} algorithm does not require us to specify, or otherwise know ahead of time, the number of clusters that our data contains and instead automatically determines this number based on the input data as well as the hyperparameters passed to the algorithm on its initialization. This leads us to the very first downside associated with the \gls{dbscan} algorithm and that is that it is \textit{exceptionally} sensitive to hyperparameter selection and thus it is imperative to have a solid grasp on the understanding of said hyperparameters so as to obtain ideal and meaningful results.
 
 \noindent \newline The \gls{dbscan} algorithm classifies points in a feature space as either core points, density-reachable points, and outliers. To best understand how this is done we must first define the two hyperparameters that are essential to the initialization of the algorithm. The first, and arguably, most important hyperparameter is labelled $\epsilon$ and defines the maximum distance between two points or, in other words, the radius of a neighborhood with respect to a point. The second hyperparameter is aptly titled \textit{minPts} ($m_{pts}$) and represents the minimum number of points that must be within distance $\epsilon$ of a point to define it as a \textit{core} point. If a point does not contain the minimum number of points within its neighborhood to define it as a core point but \textit{is} within distance $\epsilon$ from a core point then we consider it a \textit{density-reachable point} and it belongs to the cluster. Any points that cannot be reached from any other point are considered outliers or noise points. In essence, any core point forms a cluster together with all points (core or not) that are within distance $\epsilon$ from said core point. Non-core points cannot be used to reach more points and belong to the \textit{"edge"} of the cluster. The pseudocode in Listing \ref{lst:DBSCAN} below depicts an explanation of how this process works.
@@ -84,7 +84,7 @@ queryNeighborhood(P, eps)
 \end{figure}
 
 \subsection{HDBSCAN}
-\label{subsec:Background-Information:HDBSCAN}
+\label{subsec:Background-Information:Clustering-Algorithms:HDBSCAN}
 \glsentryfull{hdbscan}, proposed by \citet{Campello}, is a hierarchical non-parametric clustering algorithm that was designed to overcome the main limitations of \gls{dbscan}. The most substantial changes come in the form of no longer explicitly needing to predefine a value for the distance threshold $\epsilon$. Instead, \gls{hdbscan} generates a complete density-based clustering hierarchy over variable densities from which we can extract a simplified hierarchy composed only of the most significant clusters in our data. Without delving deep into the concepts of cluster stability, minimum spanning trees and hierarchy construction we instead refer the reader to the detailed explanation in the literature \cite{Campello} and leave off with Figure \ref{fig:HDBSCAN-Illustration} that does well to illustrate how \gls{hdbscan} works as a hierarchical clustering algorithm.
 
 \begin{figure}[H]
@@ -129,10 +129,10 @@ queryNeighborhood(P, eps)
 
 \section{Distance Metrics}
 \label{sec:Background-Information:Distance-Metrics}
-As mentioned in section \ref{subsec:Background-Information:DBSCAN}, the \gls{dbscan} algorithm as well as the \gls{hdbscan} algorithm are heavily reliant on the distance metric being used. For that reason, we explored the possibility of 2 commonly used distance metrics when working with time series data sets: Euclidean distance and Dynamic Time Warping.
+As mentioned in section \ref{subsec:Background-Information:Clustering-Algorithms:DBSCAN}, the \gls{dbscan} algorithm as well as the \gls{hdbscan} algorithm are heavily reliant on the distance metric being used. For that reason, we explored the possibility of 2 commonly used distance metrics when working with time series data sets: Euclidean distance and Dynamic Time Warping.
 
 \subsection{Euclidean Distance}
-\label{subsec:Background-Information:Euclidean-Distance}
+\label{subsec:Background-Information:Distance-Metrics:Euclidean-Distance}
 
 \begin{equation}
     d_{euc}(p, q) = \sqrt{\sum\limits_{i=1}^{n} (p_i - q_i)^2}
@@ -148,7 +148,7 @@ As mentioned in section \ref{subsec:Background-Information:DBSCAN}, the \gls{dbs
 \end{conditions*}
 
 \subsection{Dynamic Time Warping}
-\label{subsec:Background-Information:Dynamic-Time-Warping}
+\label{subsec:Background-Information:Distance-Metrics:Dynamic-Time-Warping}
 When working with time series data sets, \gls{dtw} provides us with the means of determining whether two temporal sequences exhibit any measure of similarity. To best understand how \gls{dtw} works let us assume that we are working with two sequences S and T of lengths n and m respectively. We can arrange the sequences in an $n \times m$ grid where each point (x, y) is the alignment between S[x] and T[y]. Thus, we can calculate the path with minimal distance between elements of both S and T, or what is known as a warping path as follows:
 
 \begin{equation}
@@ -197,11 +197,11 @@ When working with time series data sets, \gls{dtw} provides us with the means of
 The primary forecasting model that we will be utilizing in our forecasting pipeline is a hybrid \gls{cnn-lstm} network. This section serves to introduce readers to both the \gls{cnn} component as well as the \gls{lstm} component of this network.
 
 \subsection{Convolutional Neural Networks}
-\label{subsec:Background-Information:Convolutional-Neural-Networks}
+\label{subsec:Background-Information:Forecasting-Models:Convolutional-Neural-Networks}
 \glsentryfullpl{cnn} first truly started gaining traction in the 1990s when \citet{LeCun} demonstrated that a \gls{cnn} which aggregates simple features into progressively more complex features can be successfully used for the task of recognizing handwritten characters. Since then, their relevance has become more and more widespread with applications in image and video classification, natural language processing \cite{Collobert}, and when working with time series data sets \cite{Tsantekidis}. The following sections will briefly outline key points of the inner machinations of key \gls{cnn} components.
 
 \subsubsection{Convolutional Layers}
-\label{subsubsec:Background-Information:Convolutional-Neural-Networks:Convolutional-Layers}
+\label{subsubsec:Background-Information:Forecasting-Models:Convolutional-Neural-Networks:Convolutional-Layers}
 Firstly, and most importantly, \glspl{cnn} derive their name from the so-called "convolution" operator whose primary function is to extract features from the input vector while maintaining the spatial relationship between the features in said input vector. Put simply, the convolutional layer works by sliding a pre-determined number of filters, otherwise known as 'kernels', a pre-determined 'distance' or stride over an input vector and returning a feature map per filter. The value of said filters are, in practice, learned by the network during the training process while other hyperparameters, such as the number of filters as well as their respective sizes are pre-determined by the network architect. Other things to keep note of are that the resulting feature maps are reduced in dimensionality when compared to the input; however this can be offset by utilizing a variation of techniques such as the application of a form of \textit{padding}.
 
 \begin{figure}[hbt!]
@@ -212,7 +212,7 @@ Firstly, and most importantly, \glspl{cnn} derive their name from the so-called 
 \end{figure}
 
 \subsubsection{Rectified Linear Unit Operation}
-\label{subsubsec:Background-Information:Convolutional-Neural-Networks:ReLU}
+\label{subsubsec:Background-Information:Forecasting-Models:Convolutional-Neural-Networks:ReLU}
 Following every convolution operation is a \gls{relu} operation where \gls{relu} is a non-linear operation whose output is given by:
 
 \begin{equation}
@@ -230,7 +230,7 @@ Following every convolution operation is a \gls{relu} operation where \gls{relu}
 \end{figure}
 
 \subsubsection{Max Pooling Layers}
-\label{subsubsec:Background-Information:Convolutional-Neural-Networks:Max-Pooling-Layers}
+\label{subsubsec:Background-Information:Forecasting-Models:Convolutional-Neural-Networks:Max-Pooling-Layers}
 Inter-mingled between convolutional layers are a set of pooling layers that serve to reduce the dimensionality of each feature map while retaining the most important information. In the case of \textit{max} pooling layers, the network defines a spatial neighborhood and takes the largest element from the rectified feature map within that window. The goal of pooling layers then is to reduce the feature dimensions of our input vectors thus making them smaller and more manageable to work with while also reducing the number of parameters and computations needed to fit our network, thus minimizing the risk of overfitting. Furthermore, this renders the network invariant to small transformations, distortions and translations in the input vector by providing us with what is essentially a scale invariant representation of our vector.
 
 \begin{figure}[hbt!]
@@ -243,7 +243,7 @@ Inter-mingled between convolutional layers are a set of pooling layers that serv
 \clearpage
 
 \subsection{Long Short-Term Memory Networks}
-\label{subsec:Background-Information:Long-Short-Term-Memory-Networks}
+\label{subsec:Background-Information:Forecasting-Models:Long-Short-Term-Memory-Networks}
 \glsentryfull{lstm} networks, first proposed by Hochreiter \& Schmidhuber in 1997 \cite{Hochreiter}, are a special kind of \gls{rnn} network that are capable of learning long-term dependencies while overcoming the main limitations that plagued traditional \gls{rnn} networks (such as the exploding/vanishing gradient problem). The cell state of an \gls{lstm} can be seen as a highway that transfers relative information all the way down the sequence chain allowing information throughout the processing of the sequence to be retained giving the network a form of \textit{"memory"}. The key to the functionality of the \gls{lstm} is through the use of a number of gates that give it the ability to remove or add information to this cell state by learning what information is relevant to keep, or otherwise forget, during training. The following sections will serve to outline the functionality of the cell state and gates so that we may gain a better understanding of them.
 
 \begin{figure}[hbt!]
@@ -254,7 +254,7 @@ Inter-mingled between convolutional layers are a set of pooling layers that serv
 \end{figure}
 
 \subsubsection{Forget Gate}
-\label{subsubsec:Background-Information:Long-Short-Term-Memory-Networks:Forget-Gate}
+\label{subsubsec:Background-Information:Forecasting-Models:Long-Short-Term-Memory-Networks:Forget-Gate}
 The first gate that we will be taking a look at is the forget gate $(f_t)$. This gate decides what information should be thrown away and what information should be kept from prior steps. Information from the previous hidden state $(h_{t-1})$ and information from the current input $(x_t)$ are passed through a \textit{sigmoid} $(\sigma)$ function where values come out between 0 and 1 for each number in the cell state $(C_{t-1})$. Values closer to and including 0 indicate that we should completely forget this information while values closer to and including 1 indicate that we should completely retain all of this information. The formulation of the forget gate can be seen in equation \ref{eq:LSTM-Forget-Gate}.
 
 \begin{equation}
@@ -270,7 +270,7 @@ The first gate that we will be taking a look at is the forget gate $(f_t)$. This
 \end{figure}
 
 \subsubsection{Input Gate}
-\label{subsubsec:Background-Information:Long-Short-Term-Memory-Networks:Input-Gate}
+\label{subsubsec:Background-Information:Forecasting-Models:Long-Short-Term-Memory-Networks:Input-Gate}
 The input gate $(i_t)$ mainly serves to decide what new information will be stored in the cell state from the current step. The input gate is a \textit{sigmoid} $(\sigma)$ function that is passed the previous hidden state $(h_{t-1})$ and the current input $(x_t)$ and outputs values between 0 and 1 where values closer to and including 0 indicate that the information is not important while values closer to and including 1 indicate that the information is important. This value is multiplied by a \textit{tanh} layer that serves the purpose of creating a vector of new candidate values $(\tilde{C}_t)$ that could potentially be added to the cell state. The formulation of the input gate and its respective layers can be seen in equations \ref{eq:Input-Gate}.
 
 \begin{align}
@@ -289,7 +289,7 @@ The input gate $(i_t)$ mainly serves to decide what new information will be stor
 \end{figure}
 
 \subsubsection{Output Gate}
-\label{subsubsec:Background-Information:Long-Short-Term-Memory-Networks:Output-Gate}
+\label{subsubsec:Background-Information:Forecasting-Models:Long-Short-Term-Memory-Networks:Output-Gate}
 The final gate is the output gate $(o_t)$ which decides what the next hidden state $(h_t)$ should be. As like in the previous gates, we pass the previous hidden state $(h_{t-1})$ and the current input $(x_t)$ into a \textit{sigmoid} $(\sigma)$ function which is multiplied by the output of the \textit{tanh} function applied to the modified cell state $(C_t)$ which finally gives us our new hidden state. The new hidden state as well as the new cell state are carried over to the next time step. The formulation of the output gate and its respective layers can be seen in equations \ref{eq:LSTM-Output-Gate}.
 
 \begin{align}
@@ -315,7 +315,7 @@ The final gate is the output gate $(o_t)$ which decides what the next hidden sta
 Throughout the duration of this project we will be making use of a variety of performance metrics. These performance metrics, as well as the reasoning behind choosing them, will be explained in the following sections.
 
 \subsection{Mean Absolute Error}
-\label{subsec:Background-Information:Mean-Absolute-Error}
+\label{subsec:Background-Information:Performance-Metrics:Mean-Absolute-Error}
 The first performance metric that we will be taking a look at is the \gls{mae}. It provides us with a direct interpretation of how far off the predictions made by our forecasting models were from the actual, ground truth. However, the \gls{mae} does not provide us with the capability of drawing comparisons between results obtained from disparate data sets as it is a scale-dependent metric. That said it provides a satisfactory level of insight nonetheless. Its equation is:
 
 \begin{equation}
@@ -332,7 +332,7 @@ The first performance metric that we will be taking a look at is the \gls{mae}. 
 \end{conditions*}
 
 \subsection{Root Mean Squared Error}
-\label{subsec:Background-Information:Root-Mean-Squared-Error}
+\label{subsec:Background-Information:Performance-Metrics:Root-Mean-Squared-Error}
 The second performance metric that we will be working with is the \gls{rmse}. Its primary purpose is to serve as a cost function that our forecasting models will seek to minimize. The primary reason behind choosing \gls{rmse} as our cost function is that it penalizes larger errors. Its equation is:
 
 \begin{equation}
@@ -350,7 +350,7 @@ The second performance metric that we will be working with is the \gls{rmse}. It
 \end{conditions*}
 
 \subsection{Mean Absolute Percentage Error}
-\label{subsec:Background-Information:Mean-Absolute-Percentage-Error}
+\label{subsec:Background-Information:Performance-Metrics:Mean-Absolute-Percentage-Error}
 The final performance metric we will be taking a look at is the \glsentryfull{mape}. As it is a scale-invariant metric, its primary purpose is to allow us to assess the performance of our forecasting models across the multiple, disparate data sets we have on hand and draw comparisons between them. Its equation is:
 
 \begin{equation}
