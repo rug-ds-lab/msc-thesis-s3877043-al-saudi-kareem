@@ -1,38 +1,50 @@
 %*******************************************************
-% List of Figures, Tables and Listings
+% Appendix
 %*******************************************************
-\clearpage
-\begingroup
-    \let\clearpage\relax
-    \let\cleardoublepage\relax
+\appendix
+\chapter{Appendix}
+\label{ch:Appendix}
 
-    %*******************************************************
-    % List of Figures
-    %*******************************************************
-    \phantomsection
-    \addcontentsline{toc}{chapter}{\listfigurename}
-    \pdfbookmark[1]{\listfigurename}{lof}
-    \listoffigures
+\section{Figures}
+\label{sec:Appendix:Figures}
 
-    \vspace{8ex}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{Images/Chapter 5/REFIT/REFIT-House-12-Grangers-Causality-Matrix-Single.png}
+    \caption{A trimmed subset of the Granger Causation matrix present in Figure \ref{fig:REFIT-House-12-Grangers-Causality-Matrix-All} that displays only the relevant information with regards to our independent variables causing our target variable.}
+    \label{fig:REFIT-House-12-Grangers-Causality-Matrix-Single}
+\end{figure}
 
-    %*******************************************************
-    % List of Tables
-    %*******************************************************
-    \phantomsection
-    \addcontentsline{toc}{chapter}{\listtablename}
-    \pdfbookmark[1]{\listtablename}{lot}
-    \listoftables
+\section{Tables}
+\label{sec:Appendix:Tables}
 
-    \vspace{8ex}
-    
-    %*******************************************************
-    % List of Listings
-    %*******************************************************
-    \phantomsection
-    \addcontentsline{toc}{chapter}{\lstlistlistingname}
-    \pdfbookmark[1]{\lstlistlistingname}{lol}
-    \lstlistoflistings
-
-    \vspace{8ex}
-\endgroup
+\begin{table}[H]
+        \begin{adjustwidth*}{-3.0cm}{-3.0cm}%
+                \myfloatalign
+                \centering
+                \begin{tabularx}{\linewidth}{cX} \toprule
+                        \tableheadline{Parameter}                & \tableheadline{Description}                                                                                                                                                                                                                               \\ \midrule
+                        \gls{ghi}                                & The total irradiance received on a horizontal surface. It is the sum of the horizontal components of direct (beam) and diffuse irradiance. Units in W/m2.                                                                                                 \\
+                        \gls{ebh}                                & The horizontal component of \glsentryfull{dni}. Units in W/m2.                                                                                                                                                                                            \\
+                        \gls{dni}                                & Solar irradiance arriving in a direct line from the sun as measured on a surface held perpendicular to the sun.  Units in W/m2.                                                                                                                           \\
+                        Zenith                                   & The angle between a line perpendicular to the earth's surface and the sun (90 deg = sunrise and sunset; 0 deg = sun directly overhead). Units in degrees.
+                        \\
+                        Azimuth                                  & The angle between a line pointing due north to the sun's current position in the sky. Negative to the East. Positive to the West. 0 at due North. Units in degrees.
+                        \\
+                        Cloud Opacity                            & The measurement of how opaque the clouds are to solar radiation in the given location. Units in percentage.                                                                                                                                               \\
+                        Air Temperature                          & The air temperature (2 meters above ground level). Units in Celsius.                                                                                                                                                                                      \\
+                        Dewpoint                                 & The air dewpoint temperature (2 meters above ground level). Units in Celsius.                                                                                                                                                                             \\
+                        Relative Humidity                        & The air relative humidity (2 meters above ground level). Units in percentage.                                                                                                                                                                             \\
+                        SFC pressure                             & The air pressure at ground level. Units in hPa.                                                                                                                                                                                                           \\
+                        Wind Speed                               & The wind speed (10 meters above ground level). Units in m/s.                                                                                                                                                                                              \\
+                        Wind Direction                           & The wind direction (10 meters above ground level). This is the meteorological convention. 0 is a northerly (from the north); 90 is an easterly (from the east); 180 is a southerly (from the south); 270 is a westerly (from the west). Units in degrees. \\
+                        Preciptable Water                        & The total column preciptable water content. Units in kg/m2.                                                                                                                                                                                               \\
+                        Snow Depth                               & The snow depth liquid-water-equivalent. Units in cm.                                                                                                                                                                                                      \\
+                        \gls{gti} Horizontal Single-Axis Tracker & The total irradiance received on a sun-tracking surface.  Units in W/m2.                                                                                                                                                                                  \\
+                        \gls{gti} Fixed                          & The total irradiance received on a surface with a fixed tilt. The tilt is set to latitude of the location.  Units in W/m2.                                                                                                                                \\
+                        Albedo                                   & Average daytime surface reflectivity of visible light, expressed as a value between 0 and 1. 0 represents complete absorption. 1 represents complete reflection.                                                                                          \\
+                \end{tabularx}
+                \caption{List of meteorological parameters available to us as per the Solcast data sets as outlined in Section \ref{sec:Data-Description:Meteorological-Data}.}
+                \label{tab:Solcast-parameters}
+        \end{adjustwidth*}
+\end{table}
