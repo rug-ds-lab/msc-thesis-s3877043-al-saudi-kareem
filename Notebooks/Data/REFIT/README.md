@@ -1,0 +1,4 @@
+The REFIT dataset is publicly available and can be found [here.](https://pureportal.strath.ac.uk/en/datasets/refit-electrical-load-measurements-cleaned).
+
+# Description
+The REFIT Electrical Load Measurements dataset includes cleaned electrical consumption data in Watts for 20 households at aggregate and appliance level, timestamped and sampled at 8 second intervals. This dataset is intended to be used for research into energy conservation and advanced energy services, ranging from non-intrusive appliance load monitoring, demand response measures, tailored energy and retrofit advice, appliance usage analysis, consumption and time-use statistics and smart home/building automation.

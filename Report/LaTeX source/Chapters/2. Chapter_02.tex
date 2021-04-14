@@ -1,0 +1,69 @@
+\chapter{Related Work}
+\label{ch:Related-Work}
+Energy management systems, such as the previously introduced \gls{hems} and \gls{bems}, are designed with the intent to both optimize and control the smart grid energy market. As previously stated, to be able to do this, these demand-side management systems require a priori knowledge about the load patterns and, as a result of this, the field of designing \gls{cilf} systems has expanded quite rapidly in recent years with over 50 research papers related to the subject having been identified in existing literature \cite{Fallah}. In this chapter we will be exploring a compiled subset of this literature that specifically tackle the problem of energy profile construction as well as load forecasting. This is done so as to establish a baseline of understanding as to what has already been done within the field in terms of the two focal points of our forecasting pipeline: the precursory clustering step as well as the state-of-the-art forecasting models. Furthermore, by doing so we will be able to determine a benchmark with which to compare our proposed method to.
+
+\section{Clustering and Energy Profile Creation}
+\label{sec:Related-Work:Clustering-and-Energy-Profile-Creation}
+The chief issue that this paper seeks to address is that of creating interesting profiles in terms of recurrent patterns in energy consumption. To do this we will be making use of clustering algorithms that seek to partition our data into a number of clusters so that each of these clusters exhibit some metric of similarity or \textit{goodness}. However a measure of goodness can inherently be seen as quite subjective with \citet{BackerJain} noting that, "in cluster analysis a group of objects is split up into a number of more or less homogeneous subgroups on the basis of an often subjectively chosen measure of similarity (\ie chosen subjectively based on its ability to create "interesting" clusters) such that the similarity between objects within a subgroup is larger than the similarity between objects belonging to different subgroups.". We will be exploring papers in the existing literature that present different takes both in how they define similarity as well as their chosen clustering methodology.
+
+\noindent \newline \citet{Stephen} note that within an individual household, the daily routines and lifestyles of its occupants alongside the types of possessed major appliances may have a direct impact on the short-term load profile and cite \textit{Practice Theory} \cite{Shove} to explain the root causes of energy usage at a residential level. Practice theory states that the overall residential energy consumption is dictated by the usage of appliances through an ensemble effect of \textit{practices}. These so-called practices can be seen as a series of doings which are governed by the diverse motives and intentions of the occupants of a household and can be classified within four major categories:
+
+\begin{enumerate}
+    \item \textit{Practical Understanding:} Routine activities that actors know when to do and what to do \eg taking a shower or doing laundry.
+    \item \textit{Rules:} Operations that are constrained by the technical limitations of the system \eg a pre-programmed washing procedure of a dishwasher.
+    \item \textit{Teleo-affective:} Goal-orientated behaviours \eg making a cup of coffee or watching TV.
+    \item \textit{General Understanding:} Practices with a greater degree of persistence and regular occurrence \eg those associated with religious activities.
+\end{enumerate}
+
+\noindent \newline Further compounding on this \citet{Kong} attempted to justify the observations made by \citet{Stephen} by using a density-based clustering technique known as \gls{dbscan} \cite{Ester} to evaluate consistency in short-term load profiles. They remark on the benefits of using \gls{dbscan} stating that as it does not require knowing the number of clusters in the data ahead of time and as it contains the notion of outliers it would be an ideal clustering technique to identify consumption patterns that repeat with a measure of noise akin to what is loosely defined by Practice Theory. Their findings are that the number of clusters as well as outliers varies greatly between households with some households exhibiting no clearly discernible patterns and some households (mostly) following fairly consistent daily profiles. This is visualized in Figures \ref{fig:Kong-Case-1} and \ref{fig:Kong-Case-2}.
+
+\begin{figure}[hbt!]
+        \begin{adjustwidth*}{-0.5cm}{-0.5cm}%
+                \myfloatalign
+                \subfloat[A case with only one outlier alongside two major clusters and two minor clusters.]
+                {
+                        \includegraphics[width=0.5\textwidth]{Images/Chapter 2/Kong/Case-1.PNG}
+                        \label{fig:Kong-Case-1}
+                } \quad
+                \subfloat[A case with no clusters at all.]
+                {
+                        \includegraphics[width=0.5\textwidth]{Images/Chapter 2/Kong/Case-2.PNG}
+                        \label{fig:Kong-Case-2}
+                } \quad
+                \caption{Two widely different scenarios in the application of \gls{dbscan}. Images source: \cite{Kong} \citeIEEE{Kong}.}
+        \end{adjustwidth*}
+\end{figure}
+
+\noindent \newline \citet{Yildiz} expand on traditional load forecasting techniques, such as the \gls{smbm} that they had previously presented \cite{Yildiz2}, and present their own take in the form of a \gls{ccf} model. In traditional \glspl{smbm}, a chosen model, whether that be of a statistical variant or from the plethora of existing machine learning models, learns the relationship between the target forecasted loads when presented with some input data which, in our case, consists of some historical lags in terms of energy consumption, data with regards to the weather and temporal information with respect to the time, calendar date etc. The \gls{ccf} takes this a step further by making use of both K-means and Kohonen's \glspl{som} \cite{Kohonen} to group profiles that are most similar to each other. After obtaining and validating the output of their chosen clustering techniques they investigate the relationship between the clustering output and other temporal variables, such as the weather, by using a \gls{cart} method \cite{James}.
+
+\section{Forecasting Models}
+\label{sec:Related-Work:Forecasting-Models}
+Numerous studies have been conducted with the intent to forecast energy consumption which range from methods the likes assessed by \citet{Fumo} in the form of multiple linear regression to methods such as novel deep pooling \glspl{rnn} introduced by \citet{HengShi}. The majority of these forecasting models, whether they be statistical, machine learning or deep learning based, can be classified into 2 main categories: single technique models in which only a single, heuristic algorithm (\eg a \gls{mlp} or \gls{svm}) is used as the primary forecasting method and hybrid methods that encapsulate 2 or more algorithms \cite{Fallah} such as the \gls{cnn-lstm}.
+
+\noindent \newline \citet{Kong}  employ the use of a \gls{lstm} network as it is generally the ideal candidate when attempting to learn temporal correlations within time series data sets; however, their final results are not very promising boasting a \gls{mape} of approximately 44\% over variable time steps. This could be a result of poor hyperparameter tuning stating that, \textit{"tuning 69 models for each of the candidate methods is very time-consuming for this proof-of-concept paper"} leading us to believe that there is definitely room for improvements to be made on the core concepts of their work.
+
+\noindent \newline \citet{Yildiz} use the clusters they formed as described earlier alongside their assignments to build \glspl{smbm}, in this case through the use of a \gls{svr} model, and find that, alongside improvements to load forecasting accuracy, they are able to reveal vital information on the habitual load profiles of the households they were exploring. Unfortunately, they do not indicate any potential reasoning as to why they chose to use K-means and Kohonen's \glspl{som} in place of potentially more effective clustering methods citing only that K-means is the most popular clustering technique \cite{James} and that \glspl{som} is generally used as an extension to neural networks for the purposes of clustering. Additionally, their results only include values that are indicative of their chosen technique's performance on their specific data set presenting performance metrics such as \gls{nrmse} and \gls{nmae} rendering us unable to compare the performance of their proposed method.
+
+\noindent \newline \citet{Kim} present a more modern take on load-forecasting proposing a hybrid \gls{cnn-lstm} network that is capable of extracting both temporal and spatial features present in the data. The use of convolutional layers within the realm of load forecasting is brilliant allowing for the network to take into account the correlation between multivariate variables while minimizing noise that can eventually be fed into the \gls{lstm} section of the network that finally generates predictions. Their paper proposes such a network citing that the major difficulties with such an approach mainly boil down to hyperparameter tuning which can be remedied through a variety of means that include the likes of \glspl{ga} or through the use of packages such as Keras Tuner maintained by \citet{KerasTuner}. Furthermore, \citet{Kim} did not explore the possibility of implementing a precursory clustering step which could have lead them to substantial improvements in their final \gls{mape}.
+
+\section{Summary}
+\label{sec:Related-Work:Summary}
+Table \ref{tab:Algorihm-Comparison} depicts the wide variety in the different methods explored throughout the duration of chapter \ref{ch:Related-Work}. Major takeaways here are that the use of \glspl{som} alongside \gls{dbscan} and a \gls{cnn-lstm} could lead to substantial improvements in load forecasting accuracy as well as provide us with energy profiles that allow us to better understand the habits present on the smaller-scale individual household level and so the proposed method, outlined in chapter \ref{ch:Methodology}, will be based on these concepts.
+
+\begin{table}[H]
+        \begin{adjustwidth*}{-3.0cm}{-3.0cm}%
+                \centering
+                \myfloatalign
+                \begin{tabular}{cccc} \toprule
+                        \tableheadline{Category}                & \tableheadline{Author(s)} & \tableheadline{Year} & \tableheadline{Method(s)}                   \\ \midrule
+                        \multirow{2}{*}{Statistical based}      & \citet{Fumo}              & 2015                 & Linear regression                           \\
+                                                                & \citet{Amber}             & 2015                 & \gls{ga} \& Multiple regression             \\        \midrule
+                        \multirow{2}{*}{Machine learning based} & \citet{Lamedica}          & 1996                 & \gls{som} \& \gls{mlp}                      \\
+                                                                & \citet{Yildiz}            & 2018                 & \gls{som}, K-means, \gls{cart} \& \gls{svr} \\ \midrule
+                        \multirow{2}{*}{Deep learning based}    & \citet{Kong}              & 2019                 & \gls{dbscan} \& \gls{lstm} network          \\
+                                                                & \citet{Kim}               & 2019                 & \gls{cnn-lstm} network                      \\ \bottomrule
+                \end{tabular}
+                \caption{Outline of related work in the field of energy profile construction and load forecasting.}
+                \label{tab:Algorihm-Comparison}
+        \end{adjustwidth*}
+\end{table}

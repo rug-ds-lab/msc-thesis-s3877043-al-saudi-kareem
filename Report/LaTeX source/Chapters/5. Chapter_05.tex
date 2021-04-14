@@ -1,0 +1,233 @@
+\chapter{Exploratory Data Analysis}
+\label{ch:Exploratory-Data-Analysis}
+Before we can get into the details of our proposed model, it behooves us to perform an initial \gls{eda} so that we may be able to summarize the main characteristics of the data sets that we have on hand. This will both help us understand how to perform the necessary data transformations needed to render our data serviceable as well as aid in the discovery of patterns or anomalies that might be present in the data. To this end we will be making use of a variety of visualization techniques and statistical tests.
+
+\section{REFIT}
+\label{sec:Exploratory-Data-Analysis:REFIT}
+The first of the data sets that we will be exploring is the \gls{refit} data set. Given that this data set consists of numerous households, each comprising its own subset of data, the first step in our \gls{eda} will be to determine which of these households contains the cleanest data to work with. Following that, the remainder of the sections, and the relevant \gls{eda} techniques associated with each section, will be centered around said single household.
+
+\subsection{Issues}
+\label{subsec:Exploratory-Data-Analysis:REFIT:Issues}
+As a precursory step, we will first determine to what extent each of the individual households present in the \gls{refit} data set contain any one of a number of issues. We define issues here as any one of the following: missing periods of data, days that exhibit an incomplete number of data, or any values recorded that are labelled 'issue' by the data collection team.
+
+\subsubsection{The 'Issues' Column}
+\label{subsubsec:Exploratory-Data-Analysis:REFIT:Issues:The-Issues-Column}
+The first issue that we will be taking a look at is the aptly named \textit{Issues} column. As previously mentioned in section \ref{sec:Data-Description:REFIT}, the data collection team responsible for the curation of the \gls{refit} data set appended the \textit{Issues} column so as to indicate that the sample being recorded either contains no issues and can be treated normally, given a recorded value of 0, or that the sum of the \glspl{iam} is greater than that of the household aggregate, given a recorded value of 1. In the cases where the recorded value for the \textit{Issues} column reads 1, the data collection team recommends either completely discarding the data or, at the very least, noting the discrepancy before moving on. Table \ref{tab:REFIT-values-recorded} outlines the total number of values recorded alongside the number of values with the \textit{Issues} column set to 1. We note that, for the majority of the households, the number of values recorded that contain issues are rather small with only a small number of households, namely numbers 3 and 5 presenting a problematic number of values with issues and households 7, 13, 18 and 21 closely following suit. Given the overall number of households that we have to work with, and the fact that this project serves predominantly as a proof-of-concept, we can safely discard the aforementioned households that contain a substantial number of recorded values with issues.
+
+\begin{table}[H]
+        \begin{adjustwidth*}{-3.0cm}{-3.0cm}%
+                \myfloatalign
+                \centering
+                \begin{tabular}{cccc} \toprule
+                        \tableheadline{House no.} & \tableheadline{Date range}          & \tableheadline{Values recorded} & \tableheadline{Values with issues} \\ \midrule
+                        1                         & 2013-10-09 $\rightarrow$ 2015-07-10 & 6,960,008                       & 58,183 (0.84\%)                    \\ \midrule
+                        2                         & 2013-09-17 $\rightarrow$ 2015-05-28 & 5,733,526                       & 28,444 (0.5\%)                     \\ \midrule
+                        3                         & 2013-09-25 $\rightarrow$ 2015-06-02 & 6,994,594                       & 408,627 (5.84\%)                   \\ \midrule
+                        4                         & 2013-10-11 $\rightarrow$ 2015-07-07 & 6,760,511                       & 67,441 (1.0\%)                     \\ \midrule
+                        5                         & 2013-09-26 $\rightarrow$ 2015-07-06 & 7,430,755                       & 425,766 (5.73\%)                   \\ \midrule
+                        6                         & 2013-11-28 $\rightarrow$ 2015-06-28 & 6,241,971                       & 34,451 (0.55\%)                    \\ \midrule
+                        7                         & 2013-11-01 $\rightarrow$ 2015-07-08 & 6,756,034                       & 161,919 (2.4\%)                    \\ \midrule
+                        8                         & 2013-11-01 $\rightarrow$ 2015-05-10 & 6,118,469                       & 25,000 (0.41\%)                    \\ \midrule
+                        9                         & 2013-12-17 $\rightarrow$ 2015-07-08 & 6,169,525                       & 32,226 (0.52\%)                    \\ \midrule
+                        10                        & 2013-11-20 $\rightarrow$ 2015-06-30 & 6,739,284                       & 30,162 (0.45\%)                    \\ \midrule
+                        11                        & 2014-06-03 $\rightarrow$ 2015-06-30 & 4,431,541                       & 40,114 (0.91\%)                    \\ \midrule
+                        12                        & 2014-03-07 $\rightarrow$ 2015-07-08 & 5,859,544                       & 14,183 (0.24\%)                    \\ \midrule
+                        13                        & 2014-01-17 $\rightarrow$ 2015-05-31 & 4,737,371                       & 123,796 (2.61\%)                   \\ \midrule
+                        15                        & 2013-12-17 $\rightarrow$ 2015-07-08 & 6,225,696                       & 23,349 (0.38\%)                    \\ \midrule
+                        16                        & 2014-01-10 $\rightarrow$ 2015-07-08 & 5,722,544                       & 14,713 (0.26\%)                    \\ \midrule
+                        17                        & 2014-03-06 $\rightarrow$ 2015-06-19 & 5,431,577                       & 85,937 (1.58\%)                    \\ \midrule
+                        18                        & 2014-03-07 $\rightarrow$ 2015-05-24 & 5,007,721                       & 174,490 (3.48\%)                   \\ \midrule
+                        19                        & 2014-03-06 $\rightarrow$ 2015-06-20 & 5,622,610                       & 62,636 (1.11\%)                    \\ \midrule
+                        20                        & 2014-03-20 $\rightarrow$ 2015-06-23 & 5,168,605                       & 19,594 (0.38\%)                    \\ \midrule
+                        21                        & 2014-03-07 $\rightarrow$ 2015-07-10 & 5,383,993                       & 206,832 (3.84\%)                   \\ \bottomrule
+                \end{tabular}
+                \caption{Range of dates in the \gls{refit} data set as well as the total number of values and the total number of values that contain issues.}
+                \label{tab:REFIT-values-recorded}
+        \end{adjustwidth*}
+\end{table}
+
+\subsubsection{Missing \& Incomplete Data}
+\label{subsubsec:Exploratory-Data-Analysis:REFIT:Issues:Missing-and-Incomplete-Data}
+The second issue that we will be looking at is the combination of both completely missing data as well as days that contain gaps in the recorded data. The primary difference between these 2 sub-issues is that missing data refers to dates within the range of dates, as seen in Table \ref{tab:REFIT-values-recorded}, that are completely missing from the data set while incomplete days refers to any days that contain less than 96 readings when resampled into a resolution of 15 minutes. Table \ref{tab:REFIT-missing-data} outlines both the number of days completely missing from our data set as well as the number of incomplete days. Furthermore, Table \ref{tab:REFIT-missing-data} contains a value indicating the longest period of consecutive days missing from our data set under the column titled \textit{Stretch}. We note that the earlier households, in order of numbering, tend to contain a larger range of dates recorded and, subsequently, also tend to contain a larger number of completely missing days and a larger period of consecutive missing days. The largest outages seem to span the entirety of the month of February in the year 2014, which is also indicated in the documentation of the \gls{refit} data set, and, as the earlier households tend to have been set up prior to that date it makes sense that they would also contain a larger overall number of missing days. The number of incomplete days displays no such correlation and can likely be attributed to any number of factors on a smaller-scale including household internet failure, hardware failures, network routing issues and the likes. As in section \ref{subsubsec:Exploratory-Data-Analysis:REFIT:Issues:The-Issues-Column} we discard any households that contain a problematic number of missing, or otherwise incomplete, days. This is done in order to maintain a high level of integrity in the data of the households we choose to work with and so as to minimize the overall number of transformations that must be undertaken on said data so as to render it feasible to work with. Given that, we can safely discard households 1, 2, 4, 5, 6, 7, 9, 10, 13, 15, 16 and 21 given a threshold, or cutoff point, of missing or incomplete days set to 10\%. When taking into consideration the previously discarded households we are left with numbers 11, 12, 17, 19 and 20 to work with. To narrow it down even further, we have chosen to select household number 12 to work with for the remainder of section \ref{sec:Exploratory-Data-Analysis:REFIT} as, out of the remaining households, it contains the largest amount of days to work with alongside a relatively small amount of missing \textit{and} incomplete number of days. This decision is somewhat arbitrary as any of the remaining households could just as likely have been chosen; however, this does not exclude them or otherwise diminish their relevance to ascertain our findings within the scope of the entire project.
+
+\begin{table}[H]
+        \begin{adjustwidth*}{-3.0cm}{-3.0cm}%
+                \myfloatalign
+                \centering
+                \begin{tabular}{ccccc} \toprule
+                        \tableheadline{House no.} & \tableheadline{No. of days} & \tableheadline{Missing days} & \tableheadline{Incomplete days} & \tableheadline{Stretch} \\ \midrule
+                        1                         & 640                         & 61 (9.53\%)                  & 57 (8.91\%)                     & 40 days                 \\ \midrule
+                        2                         & 619                         & 128 (20.68\%)                & 58 (9.37\%)                     & 61 days                 \\ \midrule
+                        3                         & 616                         & 54 (8.77\%)                  & 47(7.63\%)                      & 40 days                 \\ \midrule
+                        4                         & 635                         & 41 (6.46\%)                  & 79 (12.44\%)                    & 13 days                 \\ \midrule
+                        5                         & 649                         & 21 (3.24\%)                  & 76 (11.71\%)                    & 8 days                  \\ \midrule
+                        6                         & 578                         & 69 (11.94\%)                 & 52 (9.0\%)                      & 32 days                 \\ \midrule
+                        7                         & 615                         & 61 (9.92\%)                  & 51 (8.29\%)                     & 40 days                 \\ \midrule
+                        8                         & 556                         & 43 (7.73\%)                  & 43 (7.73\%)                     & 38 days                 \\ \midrule
+                        9                         & 569                         & 74 (13.01\%)                 & 35 (6.15\%)                     & 40 days                 \\ \midrule
+                        10                        & 588                         & 22 (3.74\%)                  & 79 (13.44\%)                    & 8 days                  \\ \midrule
+                        11                        & 393                         & 31 (7.89\%)                  & 33 (8.4\%)                      & 9 days                  \\ \midrule
+                        12                        & 489                         & 20 (4.09\%)                  & 37 (7.57\%)                     & 8 days                  \\ \midrule
+                        13                        & 500                         & 89 (17.8\%)                  & 79 (15.8\%)                     & 40 days                 \\ \midrule
+                        15                        & 569                         & 38 (6.68\%)                  & 69 (12.13\%)                    & 8 days                  \\ \midrule
+                        16                        & 545                         & 52 (9.54\%)                  & 70 (12.84\%)                    & 17 days                 \\ \midrule
+                        17                        & 471                         & 19 (4.03\%)                  & 37 (7.86\%)                     & 8 days                  \\ \midrule
+                        18                        & 444                         & 15 (3.38\%)                  & 34 (7.66\%)                     & 8 days                  \\ \midrule
+                        19                        & 472                         & 19 (4.03\%)                  & 33 (6.99\%)                     & 8 days                  \\ \midrule
+                        20                        & 461                         & 19 (4.12\%)                  & 27 (5.86\%)                     & 8 days                  \\ \midrule
+                        21                        & 491                         & 33 (6.72\%)                  & 45 (9.16\%)                     & 14 days                 \\ \bottomrule
+                \end{tabular}
+                \caption{Total number of days that are missing data in the \gls{refit} data set as well as the number of days that contain incomplete data and the longest period of consecutive days missing data.}
+                \label{tab:REFIT-missing-data}
+        \end{adjustwidth*}
+\end{table}
+
+\subsubsection{Missing IAM labels}
+\label{subsubsec:Exploratory-Data-Analysis:REFIT:Issues:Missing-IAM-Labels}
+While not necessarily as relevant, having clearly labelled \glspl{iam} may help us better understand the patterns present in our data set. Unfortunately, the households that contain cleaner, more user-friendly data to work with do not necessarily contain properly labelled \glspl{iam}. This is a trade-off that we are willing to take as the focal point of our research is centered around energy consumption patterns at the aggregate level. For the sake of consistency, Table \ref{tab:REFIT-missing-labels} outlines at-a-glance information on the number of missing, or otherwise, ambiguous \gls{iam} labels per household. Here, missing \gls{iam} labels refer to \glspl{iam} that contain no recorded values throughout the duration of the data set while ambiguous \gls{iam} labels refer to \glspl{iam} that either contain numerous household appliances \textit{or} \glspl{iam} that monitored a variety of different household appliances throughout the duration of the data collection procedure.
+
+\begin{table}[H]
+        \begin{adjustwidth*}{-0.5cm}{-0.5cm}%
+                \myfloatalign
+                \centering
+                \begin{tabular}{cccc} \toprule
+                        \tableheadline{House no.} & \tableheadline{No. of IAMs} & \tableheadline{Missing IAMs} & \tableheadline{Ambiguous IAMs} \\ \midrule
+                        1                         & 9                           & 0                            & 1                              \\ \midrule
+                        2                         & 9                           & 0                            & 1                              \\ \midrule
+                        3                         & 9                           & 0                            & 2                              \\ \midrule
+                        4                         & 9                           & 0                            & 3                              \\ \midrule
+                        5                         & 9                           & 0                            & 2                              \\ \midrule
+                        6                         & 9                           & 0                            & 0                              \\ \midrule
+                        7                         & 9                           & 0                            & 3                              \\ \midrule
+                        8                         & 9                           & 0                            & 1                              \\ \midrule
+                        9                         & 9                           & 0                            & 1                              \\ \midrule
+                        10                        & 9                           & 0                            & 4                              \\ \midrule
+                        11                        & 9                           & 0                            & 3                              \\ \midrule
+                        12                        & 9                           & 3                            & 3                              \\ \midrule
+                        13                        & 9                           & 0                            & 4                              \\ \midrule
+                        15                        & 9                           & 0                            & 2                              \\ \midrule
+                        16                        & 9                           & 0                            & 3                              \\ \midrule
+                        17                        & 9                           & 0                            & 3                              \\ \midrule
+                        18                        & 9                           & 0                            & 1                              \\ \midrule
+                        19                        & 9                           & 0                            & 1                              \\ \midrule
+                        20                        & 9                           & 0                            & 2                              \\ \midrule
+                        21                        & 9                           & 0                            & 1                              \\ \bottomrule
+                \end{tabular}
+                \caption{Number of \glspl{iam} per household alongside \glspl{iam} that are missing/did not record any data at all and \glspl{iam} that are either ambiguously labelled or \glspl{iam} that experience a change in terms of the appliances that they are connected to.}
+                \label{tab:REFIT-missing-labels}
+        \end{adjustwidth*}
+\end{table}
+
+\subsection{Data Visualization}
+\label{subsec:Exploratory-Data-Analysis:REFIT:Data-Visualization}
+\textit{Data visualization} is a rather broad term encompassing a large variety of different techniques that serve to display a variety of different aspects of our data set. Within the scope of this project we have chosen to narrow down our focus on a small subset of visualizations that display vital information relevant to the overall forecasting pipeline. The first of these visualizations include the likes of Figures \ref{fig:REFIT-House-12-Day-of-the-Week-Count} and \ref{fig:REFIT-House-12-Month-Count} that serve to provide an overview of the distribution of samples over the days of the week as well as the months of the year. We note that the plots in Figures \ref{fig:REFIT-House-12-Day-of-the-Week-Count} and \ref{fig:REFIT-House-12-Month-Count} represent our data set after removing days that contain an incomplete number of values. At a glance we can see that the distribution of samples over the days of the week are relatively even while the distribution of the samples over the months is heavily dominated by the months of March through June and, to a lesser extent, July. When inspecting the results of our clustering algorithm later on in this project, the impact of having nearly twice as many samples for the aforementioned months might skew the results and as such, we will have to keep that in mind when interpreting said results.
+
+\begin{figure}[hbt!]
+        \begin{adjustwidth*}{-3.0cm}{-3.0cm}%
+                \myfloatalign
+                \subfloat[Number of samples per day of the week over the entirety of the data set. Data for this plot was pulled from CLEAN\_House12.csv of the \gls{refit} data set.]
+                {
+                        \includegraphics[width=0.7\textwidth]{Images/Chapter 5/REFIT/REFIT-House-12-Day-of-the-Week-Count.png}
+                        \label{fig:REFIT-House-12-Day-of-the-Week-Count}
+                } \quad
+                \subfloat[Number of samples per month over the entirety of the data set. Data for this plot was pulled from CLEAN\_House12.csv of the \gls{refit} data set.]
+                {
+                        \includegraphics[width=0.7\textwidth]{Images/Chapter 5/REFIT/REFIT-House-12-Month-Count.png}
+                        \label{fig:REFIT-House-12-Month-Count}
+                } \quad
+                \caption{}
+                \label{fig:REFIT-Distribution}
+        \end{adjustwidth*}
+\end{figure}
+
+\noindent \newline Figure \ref{fig:REFIT-House-12-Time-Series-Decomposition} depicts how observed electric energy consumption data can be decomposed into three main components: trend, seasonal and noise \cite{Chujai}. This visualization helps us better understand the problem of analyzing and forecasting patterns in energy consumption. For the purposes of this project we will be focusing predominantly on the \textit{trend} as it captures the main essence of the energy consumption patterns present in the individual household(s) that we are exploring. With that said, we will also attempt to apply our proposed model on the observed data, as is.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 5/REFIT/REFIT-House-12-Time-Series-Decomposition.png}
+    \caption{Time series decomposition. Data for these plots were pulled over a 3 month period that was resampled into a resolution of 15 minutes from CLEAN\_House12.csv of the \gls{refit} data set.}
+    \label{fig:REFIT-House-12-Time-Series-Decomposition}
+\end{figure}
+
+\noindent \newline Finally, we end off section \ref{subsec:Exploratory-Data-Analysis:REFIT:Data-Visualization} by presenting a stacked area chart that provides a brief overview of the energy consumption patterns of the \glspl{iam} present in household 12 of the \gls{refit} data set. Unfortunately, as household 12 does not contain clearly labelled \glspl{iam} we are unable to distinguish entirely which appliances make up the patterns that we see in Figures \ref{fig:REFIT-House-12-Stack-Plot} and \ref{fig:REFIT-House-12-IAM-Plot}. Most importantly we see that 3 \glspl{iam} in Figure \ref{fig:REFIT-House-12-IAM-Plot}, 2 of which labelled as toaster and television and 1 of which is unlabelled, recorded absolutely no data whatsoever.
+
+\begin{figure}[hbt!]
+        \begin{adjustwidth*}{-3.0cm}{-3.0cm}%
+                \myfloatalign
+                \subfloat[A sample stacked area chart showing the readings of each appliance in each hour of a day. These readings were averaged over the entirety of the data present in the data set. Data for this plot was pulled from CLEAN\_House12.csv of the \gls{refit} data set.]
+                {
+                        \includegraphics[width=0.7\textwidth]{Images/Chapter 5/REFIT/REFIT-House-12-Stack-Plot.png}
+                        \label{fig:REFIT-House-12-Stack-Plot}
+                } \quad
+                \subfloat[In-depth look at the active hours of individual appliances present in Figure \ref{fig:REFIT-House-12-Stack-Plot}.]
+                {
+                        \includegraphics[width=0.7\textwidth]{Images/Chapter 5/REFIT/REFIT-House-12-IAM-Plot.png}
+                        \label{fig:REFIT-House-12-IAM-Plot}
+                } \quad
+                \caption{}
+                \label{fig:REFIT-Stack-IAM-Plot}
+        \end{adjustwidth*}
+\end{figure}
+
+\noindent \newline That said, a quick glance at Figure \ref{fig:REFIT-House-12-Stack-Plot} shows us that the frige/freezer combination tends to run idly, consuming a consistent amount of energy throughout the day, while other appliances present noticeable spikes in the morning and much later on in the evening and, to a lesser extent, in the afternoon. The only clearly visible correlations, as a result of these missing labels, is that the computer site and microwave tend to be in use at roughly the same time, possibly around breakfast, lunch and dinner. A pair of unknown appliances spike together sometime around the evening; these could possibly be the television set alongside hi-fi or something of the sort; however, there is no clear way to completely ascertain these claims without having the \gls{iam} labels on hand.
+
+\subsection{Causality \& Correlation}
+\label{subsec:Exploratory-Data-Analysis:Causality-and-Correlation}
+Given the substantial amount of features or, in other words, independent variables that we will be appending to our data set in the feature engineering step of our forecasting pipeline it is only appropriate then to perform a cursory examination as to the relative importance of each of these features with respect to their ability to aid us in forecasting our target variable which, in this case, is the aggregate power consumption of an individual household. To this end, a variety of tests, statistical or otherwise, are available that allow us to ascertain the relationship between the independent variables in our data set and our target variable.
+
+\subsubsection{Granger Causality Test}
+\label{subsubsec:Exploratory-Data-Analysis:Causality-and-Correlation:Grangers-Causality-Test}
+The first of these tests that we will be performing is the Granger Causality test. First proposed in 1969 by \citet{Granger}, the Granger Causality test is a statistical hypothesis test that allows us to determine whether one time series is useful in forecasting another. In essence, one time series $T_x$ is said to Granger-cause another time series $T_y$ if it can be shown that, through a series of t-tests and F-tests on lagged values of both $T_x$ and $T_y$, that the values present in $T_x$ provide information that is of some statistical significance with respect to future values of $T_y$. The null hypothesis that we are testing here is that the past values of one time series $T_x$ does not cause the other time series $T_y$. If a p-value obtained from the test is less than the significance level of 0.05 \ie 95\% confidence then we can safely reject the null hypothesis and ascertain that a relationship exists between the two time series. Figures \ref{fig:REFIT-House-12-Grangers-Causality-Matrix-All} and \ref{fig:REFIT-House-12-Grangers-Causality-Matrix-Single} depict the output of performing the Granger Causality test on the meteorological features present in our data set as well as the relevant target variable, the aggregate power consumption (\textit{Aggregate}). We keep in mind that to perform the Granger Causality test we make the assumption that all of the variables of our data set are stationary \ie characteristics such as mean and variance do not change heavily over time. To confirm this we perform the Augmented Dicky-Fuller test, a unit-root test, that tests the null hypothesis that a unit root is present in our time series data set. Given a significance level of 0.05 \ie 95\% confidence then we can safely reject the null hypothesis for any p-values less than 0.05 and state that the relevant feature does not contain a unit-root and is thus stationary. Our findings can be found in Table \ref{tab:ADF-Test}.
+
+\begin{table}[htb!]
+        \centering
+        \begin{tabular*}{\linewidth}{c@{\extracolsep{\fill}}c} \toprule
+                \tableheadline{Feature} & \tableheadline{P-Value} \\ \midrule
+                AirTemp                 & 0.0                     \\
+                AlbedoDaily             & 0.0                     \\
+                Azimuth                 & 0.0                     \\
+                CloudOpacity            & 0.0                     \\
+                DewpointTemp            & 0.0                     \\
+                Dhi                     & 0.0                     \\
+                Dni                     & 0.0                     \\
+                Ebh                     & 0.0                     \\
+                Ghi                     & 0.0                     \\
+                GtiFixedTilt            & 0.0                     \\
+                GtiTracking             & 0.0                     \\
+                PrecipitableWater       & 0.0                     \\
+                RelativeHumidity        & 0.0                     \\
+                SnowDepth               & 0.0                     \\
+                SurfacePressure         & 0.0                     \\
+                WindDirection10m        & 0.0                     \\
+                WindSpeed10m            & 0.0                     \\
+                Zenith                  & 0.0                     \\
+                Aggregate               & 0.0                     \\ \bottomrule
+        \end{tabular*}
+        \caption{The results of performing the Augmented Dicky-Fuller test.}
+        \label{tab:ADF-Test}
+\end{table}
+
+\noindent In the output of the Granger Causality test we performed, as seen in Figure \ref{fig:REFIT-House-12-Grangers-Causality-Matrix-All}, the rows represent the predictor series ($T_x$) while the columns represent the response series ($T_y$) where $T_x$ causes $T_y$. The values in the matrix represent the respective p-values obtained from the test where any value that falls under the significance level of 0.05 indicates that the corresponding $T_x$ could be considered to have an effect on, or otherwise, be causing $T_y$. For the purposes of our test we considered the Chi-squared test $\left(\chi^2 = \sum \frac{(O_i - E_i)^2}{E_i}\right)$ testing for causality amongst lags up to a maximum of 12. As we can see, the majority of the meteorological features seem to form a relationship with our target variable, barre the AlbedoDaily, CloudOpacity, \glsentryfull{ebh} and WindDirection which we can safely drop from our data set.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 5/REFIT/REFIT-House-12-Grangers-Causality-Matrix.png}
+    \caption{The complete Granger Causation matrix with all of the relevant features included.}
+    \label{fig:REFIT-House-12-Grangers-Causality-Matrix-All}
+\end{figure}
+
+\noindent A trimmed subset of the Granger Causation Matrix seen in Figure \ref{fig:REFIT-House-12-Grangers-Causality-Matrix-All} can be found in Figure \ref{fig:REFIT-House-12-Grangers-Causality-Matrix-Single} for the sake of clarity and ease of readability.
+
+\subsubsection{Mutual Information Gain}
+\label{subsubsec:Exploratory-Data-Analysis:Causality-and-Correlation:Mutual-Information-Gain}
+Another measure of dependence between our independent variables and our target variable would be to calculate the mutual information gain. Mutual information quantifies the "amount of information" obtained about one variable through the observation of another variable. The results of calculating mutual information of all our independent variables, including temporal variables, against our target variable can be seen in Figure \ref{fig:REFIT-House-12-Mutual-Information-Gain}. The results seen in Figure \ref{fig:REFIT-House-12-Mutual-Information-Gain} are more or less in line with the output of the results seen in the output of the Granger Causality test further ascertaining our assumptions that certain features, such as AlbedoDaily, CloudOpacity, \gls{ebh} and WindDirection, can safely be dropped from our data set and excluded from further consideration as part of this feature selection process.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 5/REFIT/REFIT-House-12-Mutual-Information-2.png}
+    \caption{Mutual information of our independent variables against our target variable.}
+    \label{fig:REFIT-House-12-Mutual-Information-Gain}
+\end{figure}
+
+\section{UCID}
+\label{sec:Exploratory-Data-Analysis:UCID}

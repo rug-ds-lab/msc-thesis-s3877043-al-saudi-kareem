@@ -1,0 +1,1 @@
+The UCI dataset is publicly available and can be found [here.](https://archive.ics.uci.edu/ml/datasets/individual+household+electric+power+consumption)

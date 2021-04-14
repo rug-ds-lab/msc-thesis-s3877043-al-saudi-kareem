@@ -1,0 +1,205 @@
+%****************************************************************************************************
+% 0. Set the encoding of your files.
+%****************************************************************************************************
+\PassOptionsToPackage{utf8}{inputenc}
+\usepackage{inputenc}
+
+\PassOptionsToPackage{T1}{fontenc}
+\usepackage{fontenc}
+%****************************************************************************************************
+
+%****************************************************************************************************
+% 1. Configure classicthesis for your needs here.
+%****************************************************************************************************
+\PassOptionsToPackage{
+	drafting=true,
+	tocaligned=false,
+	dottedtoc=true,
+	eulerchapternumbers=true,
+	linedheaders=false,
+	floatperchapter=true,
+	eulermath=false,
+	beramono=true,
+	palatino=true,
+	style=classicthesis
+	}{classicthesis}
+%****************************************************************************************************
+
+%****************************************************************************************************
+% 2. Personal data and user ad-hoc commands.
+%****************************************************************************************************
+\newcommand{\myTitle}{Energy Consumption Patterns Profiling and Similarity Inference\xspace}
+\newcommand{\myDegree}{MSc. of Computing Science\xspace}
+\newcommand{\myName}{Kareem Al-Saudi\xspace}
+\newcommand{\myProf}{Viktoriya Degeler\xspace}
+\newcommand{\mySupervisor}{Michel Medema\xspace}
+\newcommand{\myFaculty}{Faculty of Science and Engineering\xspace}
+\newcommand{\myUni}{Rijksuniversiteit Groningen\xspace}
+\newcommand{\myLocation}{Groningen, The Netherlands\xspace}
+\newcommand{\myTime}{\today\xspace}
+\newcommand{\myVersion}{1.0}
+%****************************************************************************************************
+
+%********************************************************************
+% 2.1. Setup, fine-tuning, and useful commands.
+%********************************************************************
+\providecommand{\mLyX}{L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
+\newcommand{\ie}{i.\,e.,\;}
+\newcommand{\Ie}{I.\,e.,\;}
+\newcommand{\eg}{e.\,g.,\;}
+\newcommand{\Eg}{E.\,g.,\;}
+\newcommand{\citeIEEE}[1]{© {\citeyear{#1}}, IEEE}
+%********************************************************************
+
+%****************************************************************************************************
+% 3. Loading some handy packages.
+%****************************************************************************************************
+
+%********************************************************************
+% 3.1. Packages with options that might require adjustments.
+%********************************************************************
+\usepackage{silence}
+\WarningFilter{scrreprt}{Usage of package `titlesec'}
+\WarningFilter{titlesec}{Non standard}
+
+\PassOptionsToPackage{american}{babel}
+\usepackage{babel}
+
+\usepackage{csquotes}
+
+\PassOptionsToPackage{
+	backend=biber,
+	bibencoding=utf8,
+	language=auto,
+	style=numeric-comp,
+	sorting=none,
+	natbib=true
+	}{biblatex}
+\usepackage{biblatex}
+
+\PassOptionsToPackage{fleqn}{amsmath}
+\usepackage{amsmath}
+%********************************************************************
+
+%********************************************************************
+% 3.2. General useful packages.
+%********************************************************************
+\usepackage{graphicx}
+\usepackage{scrhack}
+\usepackage{xspace}
+%********************************************************************
+
+%****************************************************************************************************
+
+%****************************************************************************************************
+% 4. Setup floats: tables, (sub)figures, and captions.
+%****************************************************************************************************
+\usepackage{tabularx}
+\setlength{\extrarowheight}{3pt}
+\newcommand{\tableheadline}[1]{\multicolumn{1}{c}{\spacedlowsmallcaps{#1}}}
+\newcommand{\myfloatalign}{\centering}
+\usepackage{subfig}
+%****************************************************************************************************
+
+%****************************************************************************************************
+% 5. Setup code listings.
+%****************************************************************************************************
+\usepackage{listings}
+\lstset{language=[LaTeX]Tex,
+	morekeywords={PassOptionsToPackage,selectlanguage},
+	keywordstyle=\color{RoyalBlue},
+	basicstyle=\small\ttfamily,
+	commentstyle=\color{Green}\ttfamily,
+	stringstyle=\rmfamily,
+	numbers=left,
+	numbersep=5pt,
+	numberstyle=\scriptsize,
+	numbersep=8pt,
+	showstringspaces=false,
+	breaklines=true,
+	belowcaptionskip=.75\baselineskip,
+    captionpos=b,
+    basewidth=0.55em,
+    backgroundcolor=\color{codegray}
+}
+%****************************************************************************************************
+
+%****************************************************************************************************
+% 6. Last calls before the bar closes.
+%****************************************************************************************************
+\usepackage{classicthesis}
+% ****************************************************************************************************
+
+%****************************************************************************************************
+% 7. Extras.
+%****************************************************************************************************
+\emergencystretch=1em
+
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+
+\usepackage{booktabs}
+\usepackage{changepage}
+\usepackage{float}
+\usepackage{lscape}
+\usepackage{multirow}
+
+\renewcommand{\cftpartleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+\newenvironment{conditions*}
+  {\par\vspace{\abovedisplayskip}\noindent
+   \tabularx{\columnwidth}{>{$}l<{$} @{${}={}$} >{\raggedright\arraybackslash}X}}
+  {\endtabularx\par\vspace{\belowdisplayskip}}
+  
+\newcommand{\abs}[1]{\left\lvert#1\right\rvert}
+\newcommand\pro{\item[$+$]}
+\newcommand\con{\item[$-$]}
+
+\DeclareMathOperator*{\argmin}{argmin}
+% ****************************************************************************************************
+
+%********************************************************************
+% 8. Fine-tune hyperreferences (hyperref should be called last).
+%********************************************************************
+\hypersetup{
+	colorlinks=true, linktocpage=true, pdfstartpage=1, pdfstartview=FitV,
+	breaklinks=true, pageanchor=true,
+	pdfpagemode=UseNone,
+	plainpages=false, bookmarksnumbered, bookmarksopen=true, bookmarksopenlevel=1,
+	hypertexnames=true, pdfhighlight=/O,
+	urlcolor=CTurl, linkcolor=CTlink, citecolor=CTcitation,
+	pdftitle={\myTitle},
+	pdfauthor={\textcopyright\ \myName, \myUni, \myFaculty},
+	pdfsubject={},
+	pdfkeywords={},
+	pdfcreator={pdfLaTeX},
+	pdfproducer={LaTeX with hyperref and classicthesis}
+}
+%********************************************************************
+
+%********************************************************************
+% 9. Setup autoreferences (hyperref and babel).
+%********************************************************************
+\makeatletter
+\@ifpackageloaded{babel}
+{
+	\addto\extrasamerican{
+		\renewcommand*{\figureautorefname}{Figure}
+		\renewcommand*{\tableautorefname}{Table}
+		\renewcommand*{\partautorefname}{Part}
+		\renewcommand*{\chapterautorefname}{Chapter}
+		\renewcommand*{\sectionautorefname}{Section}
+		\renewcommand*{\subsectionautorefname}{Section}
+		\renewcommand*{\subsubsectionautorefname}{Section}
+	}
+	\providecommand{\subfigureautorefname}{\figureautorefname}
+	}{\relax}
+\makeatother
+%********************************************************************
+
+%********************************************************************
+% 10. Development stuff.
+%********************************************************************
+\listfiles
+%********************************************************************

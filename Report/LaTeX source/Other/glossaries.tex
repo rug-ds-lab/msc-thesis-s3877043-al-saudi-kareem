@@ -1,0 +1,71 @@
+%********************************************************************
+% Glossaries setup
+%********************************************************************
+\usepackage[style=long]{glossaries}
+\usepackage{glossaries-extra}
+
+\AtBeginDocument
+{
+  \setlength{\glsdescwidth}{0.7\columnwidth}
+  \setlength{\glspagelistwidth}{0.7\columnwidth}
+}
+
+\makeglossaries
+
+\setabbreviationstyle[abbreviation]{long-postshort-user}
+\setabbreviationstyle[short]{short}
+\glssetcategoryattribute{abbreviation}{glossdesc}{title}
+\glssetcategoryattribute{abbreviation}{nohyperfirst}{true}
+\renewcommand{\glsnamefont}[1]{\spacedlowsmallcaps{#1}}
+\renewcommand*{\glsxtruserparen}[2]{\glsxtrfullsep{#2}(\glshyperlink[#1]{#2})}
+\glspatchtabularx
+%********************************************************************
+
+%********************************************************************
+% Abbreviations
+%********************************************************************
+\newabbreviation{ann}{ANN}{Artificial Neural Network}
+\newabbreviation{arpa-e}{ARPA-E}{Advanced Research Projects Agency-Energy}
+\newabbreviation{bems}{BEMS}{Battery Energy Management System}
+\newabbreviation{bmu}{BMU}{Best Matching Unit}
+\newabbreviation{cart}{CART}{Classification and Regression Tree}
+\newabbreviation{ccf}{CCF}{Cluster-Classify-Forecast}
+\newabbreviation{cilf}{CILF}{computationally intelligent load forecasting}
+\newabbreviation{cnn-lstm}{CNN-LSTM}{Convolutional Neural Network Long Short-Term Memory}
+\newabbreviation{cnn}{CNN}{Convolutional Neural Network}
+\newabbreviation{dbscan}{DBSCAN}{Density Based Spatial Clustering of Applications with Noise}
+\newabbreviation[category=short]{dhi}{DHI}{Direct Horizontal Irradiance}
+\newabbreviation[category=short]{dni}{DNI}{Direct Normal Irradiance}
+\newabbreviation{dtw}{DTW}{dynamic time warping}
+\newabbreviation[category=short]{ebh}{EBH}{Direct (Beam) Horizontal Irradiance}
+\newabbreviation{eda}{EDA}{exploratory data analysis}
+\newabbreviation{epsrc}{EPSRC}{Engineering and Physical Sciences Research Council}
+\newabbreviation{ga}{GA}{genetic algorithm}
+\newabbreviation[category=short]{ghi}{GHI}{Global Horizontal Irradiance}
+\newabbreviation[category=short]{gti}{GTI}{Global Torizontal Irradiance}
+\newabbreviation{hdbscan}{HDBSCAN}{Hierarchical Density Based Spatial Clustering of Applications with Noise}
+\newabbreviation{hems}{HEMS}{Home Energy Management System}
+\newabbreviation{iam}{IAM}{individual appliance monitor}
+\newabbreviation{lstm}{LSTM}{Long Short-Term Memory}
+\newabbreviation{mae}{MAE}{mean absolute error}
+\newabbreviation{mape}{MAPE}{mean absolute percentage error}
+\newabbreviation{mit}{MIT}{Massachusetts Institute of Technology}
+\newabbreviation{mlp}{MLP}{Multi-Layer Perceptron}
+\newabbreviation{nan}{NaN}{not a number}
+\newabbreviation{nmae}{NMAE}{normalized mean absolute error}
+\newabbreviation{nrmse}{NRMSE}{normalized root mean square error}
+\newabbreviation{pca}{PCA}{Principal Component Analysis}
+\newabbreviation{redd}{REDD}{Reference Energy Disaggregation}
+\newabbreviation{refit}{REFIT}{Personalised Retrofit Decision Support Tools for UK Homes using Smart Home Technology}
+\newabbreviation{relu}{ReLU}{Rectified Linear Unit}
+\newabbreviation{rmse}{RMSE}{root mean square error}
+\newabbreviation{rnn}{RNN}{Recurrent Neural Network}
+\newabbreviation{smbm}{SMBM}{Smart Meter Based Model}
+\newabbreviation{som}{SOM}{Self-Organizing Map}
+\newabbreviation{svm}{SVM}{Support Vector Machine}
+\newabbreviation{svr}{SVR}{Support Vector Regression}
+\newabbreviation{ucid}{UCID}{UCI data set}
+\newabbreviation{uci}{UCI}{University of California, Irvine}
+\newabbreviation{uk}{UK}{United Kingdom}
+\newabbreviation{vstlf}{VSTLF}{very short-term load forecasting}
+%********************************************************************
