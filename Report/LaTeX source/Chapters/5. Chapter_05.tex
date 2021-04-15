@@ -172,39 +172,39 @@ While not necessarily as relevant, having clearly labelled \glspl{iam} may help 
 \noindent \newline That said, a quick glance at Figure \ref{fig:REFIT-House-12-Stack-Plot} shows us that the frige/freezer combination tends to run idly, consuming a consistent amount of energy throughout the day, while other appliances present noticeable spikes in the morning and much later on in the evening and, to a lesser extent, in the afternoon. The only clearly visible correlations, as a result of these missing labels, is that the computer site and microwave tend to be in use at roughly the same time, possibly around breakfast, lunch and dinner. A pair of unknown appliances spike together sometime around the evening; these could possibly be the television set alongside hi-fi or something of the sort; however, there is no clear way to completely ascertain these claims without having the \gls{iam} labels on hand.
 
 \subsection{Causality \& Correlation}
-\label{subsec:Exploratory-Data-Analysis:Causality-and-Correlation}
+\label{subsec:Exploratory-Data-Analysis:REFIT:Causality-and-Correlation}
 Given the substantial amount of features or, in other words, independent variables that we will be appending to our data set in the feature engineering step of our forecasting pipeline it is only appropriate then to perform a cursory examination as to the relative importance of each of these features with respect to their ability to aid us in forecasting our target variable which, in this case, is the aggregate power consumption of an individual household. To this end, a variety of tests, statistical or otherwise, are available that allow us to ascertain the relationship between the independent variables in our data set and our target variable.
 
 \subsubsection{Granger Causality Test}
-\label{subsubsec:Exploratory-Data-Analysis:Causality-and-Correlation:Grangers-Causality-Test}
-The first of these tests that we will be performing is the Granger Causality test. First proposed in 1969 by \citet{Granger}, the Granger Causality test is a statistical hypothesis test that allows us to determine whether one time series is useful in forecasting another. In essence, one time series $T_x$ is said to Granger-cause another time series $T_y$ if it can be shown that, through a series of t-tests and F-tests on lagged values of both $T_x$ and $T_y$, that the values present in $T_x$ provide information that is of some statistical significance with respect to future values of $T_y$. The null hypothesis that we are testing here is that the past values of one time series $T_x$ does not cause the other time series $T_y$. If a p-value obtained from the test is less than the significance level of 0.05 \ie 95\% confidence then we can safely reject the null hypothesis and ascertain that a relationship exists between the two time series. Figures \ref{fig:REFIT-House-12-Grangers-Causality-Matrix-All} and \ref{fig:REFIT-House-12-Grangers-Causality-Matrix-Single} depict the output of performing the Granger Causality test on the meteorological features present in our data set as well as the relevant target variable, the aggregate power consumption (\textit{Aggregate}). We keep in mind that to perform the Granger Causality test we make the assumption that all of the variables of our data set are stationary \ie characteristics such as mean and variance do not change heavily over time. To confirm this we perform the Augmented Dicky-Fuller test, a unit-root test, that tests the null hypothesis that a unit root is present in our time series data set. Given a significance level of 0.05 \ie 95\% confidence then we can safely reject the null hypothesis for any p-values less than 0.05 and state that the relevant feature does not contain a unit-root and is thus stationary. Our findings can be found in Table \ref{tab:ADF-Test}.
+\label{subsubsec:Exploratory-Data-Analysis:REFIT:Causality-and-Correlation:Grangers-Causality-Test}
+The first of these tests that we will be performing is the Granger Causality test. First proposed in 1969 by \citet{Granger}, the Granger Causality test is a statistical hypothesis test that allows us to determine whether one time series is useful in forecasting another. In essence, one time series $T_x$ is said to Granger-cause another time series $T_y$ if it can be shown that, through a series of t-tests and F-tests on lagged values of both $T_x$ and $T_y$, that the values present in $T_x$ provide information that is of some statistical significance with respect to future values of $T_y$. The null hypothesis that we are testing here is that the past values of one time series $T_x$ does not cause the other time series $T_y$. If a p-value obtained from the test is less than the significance level of 0.05 \ie 95\% confidence then we can safely reject the null hypothesis and ascertain that a relationship exists between the two time series. Figures \ref{fig:REFIT-House-12-Grangers-Causality-Matrix-All} and \ref{fig:REFIT-House-12-Grangers-Causality-Matrix-Single} depict the output of performing the Granger Causality test on the meteorological features present in our data set as well as the relevant target variable, the aggregate power consumption (\textit{Aggregate}). We keep in mind that to perform the Granger Causality test we make the assumption that all of the variables of our data set are stationary \ie characteristics such as mean and variance do not change heavily over time. To confirm this we perform the Augmented Dicky-Fuller test, a unit-root test, that tests the null hypothesis that a unit root is present in our time series data set. Given a significance level of 0.05 \ie 95\% confidence then we can safely reject the null hypothesis for any p-values less than 0.05 and state that the relevant feature does not contain a unit-root and is thus stationary. Our findings can be found in Table \ref{tab:REFIT-ADF-Test}.
 
 \begin{table}[htb!]
         \centering
-        \begin{tabular*}{\linewidth}{c@{\extracolsep{\fill}}c} \toprule
-                \tableheadline{Feature} & \tableheadline{P-Value} \\ \midrule
-                AirTemp                 & 0.0                     \\
-                AlbedoDaily             & 0.0                     \\
-                Azimuth                 & 0.0                     \\
-                CloudOpacity            & 0.0                     \\
-                DewpointTemp            & 0.0                     \\
-                Dhi                     & 0.0                     \\
-                Dni                     & 0.0                     \\
-                Ebh                     & 0.0                     \\
-                Ghi                     & 0.0                     \\
-                GtiFixedTilt            & 0.0                     \\
-                GtiTracking             & 0.0                     \\
-                PrecipitableWater       & 0.0                     \\
-                RelativeHumidity        & 0.0                     \\
-                SnowDepth               & 0.0                     \\
-                SurfacePressure         & 0.0                     \\
-                WindDirection10m        & 0.0                     \\
-                WindSpeed10m            & 0.0                     \\
-                Zenith                  & 0.0                     \\
-                Aggregate               & 0.0                     \\ \bottomrule
+        \begin{tabular*}{\linewidth}{l@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c} \toprule
+                \tableheadline{Feature} & \tableheadline{P-Value} & \tableheadline{Stationary} \\ \midrule
+                AirTemp                 & 0.0                     & True                       \\
+                AlbedoDaily             & 0.0                     & True                       \\
+                Azimuth                 & 0.0                     & True                       \\
+                CloudOpacity            & 0.0                     & True                       \\
+                DewpointTemp            & 0.0                     & True                       \\
+                Dhi                     & 0.0                     & True                       \\
+                Dni                     & 0.0                     & True                       \\
+                Ebh                     & 0.0                     & True                       \\
+                Ghi                     & 0.0                     & True                       \\
+                GtiFixedTilt            & 0.0                     & True                       \\
+                GtiTracking             & 0.0                     & True                       \\
+                PrecipitableWater       & 0.0                     & True                       \\
+                RelativeHumidity        & 0.0                     & True                       \\
+                SnowDepth               & 0.0                     & True                       \\
+                SurfacePressure         & 0.0                     & True                       \\
+                WindDirection10m        & 0.0                     & True                       \\
+                WindSpeed10m            & 0.0                     & True                       \\
+                Zenith                  & 0.0                     & True                       \\
+                Aggregate               & 0.0                     & True                       \\ \bottomrule
         \end{tabular*}
         \caption{The results of performing the Augmented Dicky-Fuller test.}
-        \label{tab:ADF-Test}
+        \label{tab:REFIT-ADF-Test}
 \end{table}
 
 \noindent In the output of the Granger Causality test we performed, as seen in Figure \ref{fig:REFIT-House-12-Grangers-Causality-Matrix-All}, the rows represent the predictor series ($T_x$) while the columns represent the response series ($T_y$) where $T_x$ causes $T_y$. The values in the matrix represent the respective p-values obtained from the test where any value that falls under the significance level of 0.05 indicates that the corresponding $T_x$ could be considered to have an effect on, or otherwise, be causing $T_y$. For the purposes of our test we considered the Chi-squared test $\left(\chi^2 = \sum \frac{(O_i - E_i)^2}{E_i}\right)$ testing for causality amongst lags up to a maximum of 12. As we can see, the majority of the meteorological features seem to form a relationship with our target variable, barre the AlbedoDaily, CloudOpacity, \glsentryfull{ebh} and WindDirection which we can safely drop from our data set.
@@ -219,7 +219,7 @@ The first of these tests that we will be performing is the Granger Causality tes
 \noindent A trimmed subset of the Granger Causation Matrix seen in Figure \ref{fig:REFIT-House-12-Grangers-Causality-Matrix-All} can be found in Figure \ref{fig:REFIT-House-12-Grangers-Causality-Matrix-Single} for the sake of clarity and ease of readability.
 
 \subsubsection{Mutual Information Gain}
-\label{subsubsec:Exploratory-Data-Analysis:Causality-and-Correlation:Mutual-Information-Gain}
+\label{subsubsec:Exploratory-Data-Analysis:REFIT:Causality-and-Correlation:Mutual-Information-Gain}
 Another measure of dependence between our independent variables and our target variable would be to calculate the mutual information gain. Mutual information quantifies the "amount of information" obtained about one variable through the observation of another variable. The results of calculating mutual information of all our independent variables, including temporal variables, against our target variable can be seen in Figure \ref{fig:REFIT-House-12-Mutual-Information-Gain}. The results seen in Figure \ref{fig:REFIT-House-12-Mutual-Information-Gain} are more or less in line with the output of the results seen in the output of the Granger Causality test further ascertaining our assumptions that certain features, such as AlbedoDaily, CloudOpacity, \gls{ebh} and WindDirection, can safely be dropped from our data set and excluded from further consideration as part of this feature selection process.
 
 \begin{figure}[H]
@@ -231,3 +231,91 @@ Another measure of dependence between our independent variables and our target v
 
 \section{UCID}
 \label{sec:Exploratory-Data-Analysis:UCID}
+In contrast to the \gls{refit} data set the \gls{ucid} data set is not quite as robust in terms of the content it contains. Whereas each house in the \gls{refit} data set contains upwards of 9 \glspl{iam} the \gls{ucid} data set contains but 3 sub-meterings that give us limited insight as to where power is being drawn from within the house. Furthermore, the \gls{ucid} data set represents but a single household. It does; however, contain a larger amount of data spanning a greater overall span of time. As per the \gls{refit} data set, we will be applying many of the same \gls{eda} techniques present in Section \ref{sec:Exploratory-Data-Analysis:REFIT} on the \gls{ucid} data set.
+
+\subsection{Data Visualization}
+\label{subsec:Exploratory-Data-Analysis:UCID:Data-Visualization}
+As per Section \ref{subsec:Exploratory-Data-Analysis:REFIT:Data-Visualization}, we start off by presenting figures \ref{fig:UCID-House-12-Day-of-the-Week-Count} and \ref{fig:UCID-House-12-Month-Count} that serve to provide an overview of the distribution of our samples over the days of the week as well as the months of the year. We again note that these plots represent our data set \textit{after} removing days that contain an incomplete number of values. Unlike the \gls{refit} data set, the \gls{ucid} data set has a much more even distribution over the months of the year with only the month of December standing out in terms of lack of data. Following that, Figure \ref{fig:UCID-Time-Series-Decomposition} depicts how the electric energy consumption data in the \gls{ucid} data set can be decomposed into the three previously mentioned main components: trend, seasonal and noise with the trend being once again the focal point of our research done as part of this project.
+
+\begin{figure}[hbt!]
+        \begin{adjustwidth*}{-3.0cm}{-3.0cm}%
+                \myfloatalign
+                \subfloat[Number of samples per day of the week over the entirety of the \gls{ucid} data set.]
+                {
+                        \includegraphics[width=0.7\textwidth]{Images/Chapter 5/UCID/UCID-Day-of-the-Week-Count.png}
+                        \label{fig:UCID-House-12-Day-of-the-Week-Count}
+                } \quad
+                \subfloat[Number of samples per month over the entirety of the \gls{ucid} data set.]
+                {
+                        \includegraphics[width=0.7\textwidth]{Images/Chapter 5/UCID/UCID-Month-Count.png}
+                        \label{fig:UCID-House-12-Month-Count}
+                } \quad
+                \caption{}
+                \label{fig:UCID-Distribution}
+        \end{adjustwidth*}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 5/UCID/UCID-Time-Series-Decomposition.png}
+    \caption{Time series decomposition. Data for these plots were pulled over a 1 year period that was resampled into a resolution of 15 minutes.}
+    \label{fig:UCID-Time-Series-Decomposition}
+\end{figure}
+
+\subsection{Causality \& Correlation}
+\label{subsec:Exploratory-Data-Analysis:UCID:Causality-and-Correlation}
+Given that we will be appending similar features to the \gls{ucid} data set as part of our feature engineering step we will be performing the same examination as to the relative importance of each of these features with respect to their ability to aid us in forecasting our target variable which, in this case, is the global active power consumption of an individual household.
+
+\subsubsection{Granger Causality Test}
+\label{subsubsec:Exploratory-Data-Analysis:UCID:Causality-and-Correlation:Grangers-Causality-Test}
+As per \ref{subsubsec:Exploratory-Data-Analysis:REFIT:Causality-and-Correlation:Grangers-Causality-Test}, we start off by performing the Augmented Dicky-Fuller test to determine whether our variables are stationary. The results of performing this test can be seen in Table \ref{tab:UCID-ADF-Test}.
+
+\begin{table}[htb!]
+        \centering
+        \begin{tabular*}{\linewidth}{l@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c} \toprule
+                \tableheadline{Feature} & \tableheadline{P-Value} & \tableheadline{Stationary} \\ \midrule
+                AirTemp                 & 0.0                     & True                       \\
+                AlbedoDaily             & 0.0                     & True                       \\
+                Azimuth                 & 0.0                     & True                       \\
+                CloudOpacity            & 0.0                     & True                       \\
+                DewpointTemp            & 0.0                     & True                       \\
+                Dhi                     & 0.0                     & True                       \\
+                Dni                     & 0.0                     & True                       \\
+                Ebh                     & 0.0                     & True                       \\
+                Ghi                     & 0.0                     & True                       \\
+                GtiFixedTilt            & 0.0                     & True                       \\
+                GtiTracking             & 0.0                     & True                       \\
+                PrecipitableWater       & 0.0                     & True                       \\
+                RelativeHumidity        & 0.0                     & True                       \\
+                SnowDepth               & 0.0                     & True                       \\
+                SurfacePressure         & 0.0                     & True                       \\
+                WindDirection10m        & 0.0                     & True                       \\
+                WindSpeed10m            & 0.0                     & True                       \\
+                Zenith                  & 0.0                     & True                       \\
+                Global\_active\_power   & 0.0                     & True                       \\ \bottomrule
+        \end{tabular*}
+        \caption{The results of performing the Augmented Dicky-Fuller test.}
+        \label{tab:UCID-ADF-Test}
+\end{table}
+
+\noindent Unlike the results we observed when performing the Granger Causality test on the \gls{refit} data set, the results obtained when performing the test on the \gls{ucid} data set, as seen in Figure \ref{fig:UCID-Grangers-Causality-Matrix-All}, depict the entirety of the meteorological features present in the Solcast data as having some form of a relationship with our target variable. To be able to minimize the overall number of features appended to the \gls{ucid} data set as part of our feature selection process and not fall victim to the curse of dimensionality it is imperative to determine which of these features presents the highest correlation with our target variable. That said, we will not be relying entirely on the Granger Causality test to determine which features to keep and which features to drop and use it more-so as a heuristic method to approximate which features could potentially prove to provide relevant information when forecasting our target variable
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 5/UCID/UCID-Grangers-Causality-Matrix.png}
+    \caption{The complete Granger Causation matrix with all of the relevant features included.}
+    \label{fig:UCID-Grangers-Causality-Matrix-All}
+\end{figure}
+
+\noindent A trimmed subset of the Granger Causation Matrix seen in Figure \ref{fig:UCID-Grangers-Causality-Matrix-All} can be found in Figure \ref{fig:UCID-Grangers-Causality-Matrix-Single} for the sake of clarity and ease of readability.
+
+\subsubsection{Mutual Information Gain}
+\label{subsubsec:Exploratory-Data-Analysis:UCID:Causality-and-Correlation:Mutual-Information-Gain}
+When calculating mutual information gain, our results, as seen in Figure \ref{fig:UCID-Mutual-Information-Gain}, are more in line with what we saw when looking at the results obtained when calculating mutual information gain on the \gls{refit} data set. This is meant in the sense that the same features, namely the AlbedoDaily, CloudOpacity, \gls{ebh} and WindDirection, provide the least amount of information considering our target variable and, so as to also keep the experiments performed on both data sets more or less in line, we choose to exclude these features as part of the feature selection process.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 5/UCID/UCID-Mutual-Information.png}
+    \caption{Mutual information of our independent variables against our target variable.}
+    \label{fig:UCID-Mutual-Information-Gain}
+\end{figure}
