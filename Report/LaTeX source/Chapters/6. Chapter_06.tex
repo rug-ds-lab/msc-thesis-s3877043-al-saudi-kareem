@@ -1,8 +1,110 @@
 \chapter{Methodology}
 \label{ch:Methodology}
+This paper proposes a forecasting method that utilizes dimensionality reduction and clustering techniques to group days that exhibit similarity in terms of electric consumption behaviour. Days that are grouped into the same cluster are thought to contain shared features, whether those features be temporal or meteorological or otherwise, that cause this similarity in behaviour. The formed clusters (per household) are used for 2 purposes: firstly, they will be used to train a classification model that utilizes available context information to assign a new day to the correct cluster. Secondly, and finally, a novel deep learning method will be applied on a per-cluster basis to forecast future energy consumption. An outline of the proposed method can be seen in Figure \ref{fig:Proposed-Model}.
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{Images/Chapter 6/Proposed-Model.png}
+    \includegraphics[width=\textwidth]{Images/Chapter 6/Proposed-Model.pdf}
     \caption{Proposed daily profile extraction and load forecasting model.}
     \label{fig:Proposed-Model}
 \end{figure}
+
+\section{Stage 1 - Data Collection and Cleaning}
+\label{sec:Methodology:Stage-1}
+\begin{adjustwidth}{-1.65cm}{0.0cm}%
+    \begin{enumerate}[label=Step 1.\arabic*:, leftmargin=*]
+    \setlength\itemsep{1em}
+        \item As mentioned prior, this paper utilizes available historical data with regards to energy consumption on an individual household basis. In reality, as part of stage 1 of our forecasting pipeline, time series data of daily electricity consumption would need to be collected from an individual household meter for an adequate amount of time at an ideal resolution so as to obtain acceptable results.
+        \item After collecting, or in our case loading in, the data we perform common preprocessing techniques to account for noisy or otherwise missing data that occurred during the transmission of the data from the meters. In our case, the available data was resampled into a resolution of 15 minutes and any days that contained less than 96 values (given that there are 96 15 minute chunks in a day) were dropped from our data set. All other days that contained \gls{nan} values were also not considered and subsequently dropped from our data set.
+    \end{enumerate}
+\end{adjustwidth}
+
+\section{Stage 2 - Dimensionality Reduction and Clustering}
+\label{sec:Methodology:Stage-2}
+\begin{adjustwidth}{-1.65cm}{-0.0cm}%
+    \begin{enumerate}[label=Step 2.\arabic*:, leftmargin=*]
+    \setlength\itemsep{1em}
+        \item Given that each day in our data set is represented by 96 dimensions, each dimension comprising mean active power consumption over a time period of 15 minutes, the first logical step to undertake would be to transform the data in a manner that enables our clustering techniques to more efficiently determine which days exhibit similarity in terms of electric consumption behaviour. This \textit{dimensionality reduction} step comprises 2 parts that are outlined in the substeps below.
+        
+        \noindent \newline To start things off we divide each day into 5 different periods as follows:
+            \begin{enumerate}[label=\arabic*:, leftmargin=.75cm]
+                \item Morning: 06:00 - 11:00
+                \item Late morning/afternoon: 11:00 - 15:00
+                \item Late afternoon/early evening: 15:00 - 20:30
+                \item Evening: 20:30 - 23:30
+                \item Late evening/early morning: 23:30 - 06:00
+            \end{enumerate}
+        
+        \noindent \newline Following that, we represent each period by its respective mean, minimum, maximum value as well as its standard deviation. The outcome of performing this is that each day is now represented by a total of 20 dimensions rather than the initial 96 which is a reduction of $\sim 80\%$.
+        
+        \noindent \newline We can reduce this even further, and even visualize our data in 2 or 3 dimensions, by making use of either of the \gls{t-sne} or \gls{umap} algorithms outlined in Section \ref{subsec:Background-Information:Dimension-Reduction:t-Distributed-Stochastic-Neighbor-Embedding}. The most important hyperparameter to tune for either algorithm is the \textit{perplexity} hyperparameter for the \gls{t-sne} algorithm and the equivalent $n_{\text{neighbors}}$ hyperparameter for the \gls{umap} algorithm. During our research, we found that an optimal value for either of these hyperparameters is $N^{\frac{1}{2}}$ where N is the number of samples present in the data set. To better understand each of the steps of our proposed model, we will begin a series of visualizations showcasing each step as performed on the \gls{ucid} data set starting off with the output of performing the \gls{t-sne} algorithm which can be seen in Figure \ref{fig:UCID-t-SNE}.
+        
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-t-SNE.pdf}
+            \caption{The output of performing the \gls{t-sne} algorithm on the 20-dimensional \gls{ucid} data set. Each point in this figure represents a single sample (or day) within our data set mapped onto a 2-dimensional surface.}
+            \label{fig:UCID-t-SNE}
+        \end{figure}
+        
+        \item After performing the dimensionality reduction step on our data, we proceed to cluster the resulting output by applying the \gls{hdbscan} algorithm, as outlined in Section \ref{subsec:Background-Information:Clustering-Algorithms:HDBSCAN}. As previously mentioned, the only important parameters that need to be passed to the \gls{hdbscan} algorithm are the minimum size we expect each cluster to be. In this case we set that value to $\frac{1}{10}\left(N\right)$ where N is the number of samples present in the data set. Our reasoning for selecting this value is predominantly based on the adequate results observed by \citet{Kong} in their implementation of the \gls{dbscan} algorithm in a similar setting whilst utilizing a similar selection in terms of hyperparameter settings. The other hyperparameter we choose to tune is the \textit{min\_samples} hyperparameter which, in layman's terms, denotes how conservative we would like to be with our clustering in terms of restricting clusters to progressively more dense areas and classifying samples from our data set as noise. In our case, an arbitrary value of 15 was selected, in contrast to the default value that sets $min\_samples = min\_cluster\_size$. The results of performing the \gls{hdbscan} algorithm on our 2-dimensional representation of the \gls{ucid} data set (represented by Figure \ref{fig:UCID-t-SNE}) can be seen in Figure \ref{fig:UCID-HDBSCAN}.
+        
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-HDBSCAN.pdf}
+            \caption{The output of performing the \gls{hdbscan} algorithm on the 2-dimensional \gls{ucid} data set previously seen in Figure \ref{fig:UCID-t-SNE}.}
+            \label{fig:UCID-HDBSCAN}
+        \end{figure}
+        
+        \noindent \newline For the sake of comparison, we present the output of applying the k-means clustering algorithm (assuming $k = 3$) on the same 2-dimensional representation of the \gls{ucid} data set. This can be seen in Figure \ref{fig:UCID-K-Means}. We note immediately the capability of the \gls{hdbscan} algorithm in capturing a better representation of the clusters present in our 2-dimensional representation of the \gls{ucid} data set. The representation of outliers as noise points and not having to have a priori knowledge on the number of clusters present in the data we are working with is a definite pro as well further compounding our choice of clustering algorithm in our proposed model.
+        
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-K-Means.pdf}
+            \caption{The output of performing the k-means algorithm on the 2-dimensional \gls{ucid} data set previously seen in Figure \ref{fig:UCID-t-SNE}.}
+            \label{fig:UCID-K-Means}
+        \end{figure}
+        
+        \item Visualizing, or otherwise manually inspecting, the clusters we obtain as a result of our application of the \gls{hdbscan} algorithm is necessary so that we maybe be better able to understand whether our clustering algorithm truly captures the habits of the individuals residing in the households we are working with. The first step in our analysis of the resulting clusters would be to plot the averaged power consumption on a per cluster basis so that we may be able to clearly visualize the patterns in power consumption per cluster. An example of this, in line with the previous examples showcasing our proposed model on the \gls{ucid} data set, can be seen in Figure \ref{fig:UCID-HDBSCAN-V1}. We note that, in this example, a subset of our data (24 samples in total), were recorded as noise by the \gls{hdbscan} algorithm. Inspecting these samples manually lead to the confirmation that, of the 4 year's worth of data, these 24 days were the only days that exhibited no tangible shift in terms of power consumption throughout the entirety of the day; however, this is not explicitly outlined in the documentation of the \gls{ucid} data set. This can be seen as a more or less flat line in Figure \ref{fig:UCID-HDBSCAN-V1}.
+    
+        \begin{figure}[hbt!]
+            \centering
+            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-HDBSCAN-V1.pdf}
+            \caption{Average power consumption per hour of the day for each of the resulting clusters obtained after utilizing the \gls{hdbscan} algorithm on our 2-dimensional representation of the \gls{ucid} data set.}
+            \label{fig:UCID-HDBSCAN-V1}
+        \end{figure}
+        
+        \noindent \newline Following this, Figures \ref{fig:UCID-HDBSCAN-V2} and \ref{fig:UCID-HDBSCAN-V3} help us visualize the distribution of the clusters on the months of the year as well as the days of the week to ascertain whether any of the clusters present any correlation with these temporal variables. Given that the initial spread of the data throughout the months of the year and days of the week of the \gls{ucid} were relatively uniform, we should not see any bias towards any particular month or day in either Figure \ref{fig:UCID-HDBSCAN-V2} or Figure \ref{fig:UCID-HDBSCAN-V3} respectively.
+        
+        
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-HDBSCAN-V2.pdf}
+            \caption{Distribution of the clusters over the different months of the year.}
+            \label{fig:UCID-HDBSCAN-V2}
+        \end{figure}
+        
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-HDBSCAN-V3.pdf}
+            \caption{Distribution of the clusters over the different days of the week.}
+            \label{fig:UCID-HDBSCAN-V3}
+        \end{figure}
+        
+        \noindent \newline At a glance, we notice that clusters 1 and 2 are more likely to occur on the weekdays with cluster 3 taking over the majority share of the weekend which tends to explain the more consistent draw in power throughout the entirety of the day for samples that belong to cluster 3. Furthermore, samples in cluster 1 tend to gravitate towards the warmer, summery months peaking in terms of number occurrences in the month of July while samples in clusters 2 and 3 exhibit a more uniform spread over the remainder of the colder months which could explain the lower average draw in power present in samples that belong to cluster 1 being a result of the owners of the home not being in as often or potentially not needing to make use of appliances to heat up their home (we note that this data was collected in Sceaux, France that experiences a warm season of $\sim \! 3$  months with otherwise, generally, cooler temperatures). 
+        
+        \begin{figure}[hbt!]
+            \centering
+            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-HDBSCAN-V4.pdf}
+            \caption{Spread in number of samples per cluster label.}
+            \label{fig:UCID-HDBSCAN-V4}
+        \end{figure}
+        
+        \noindent \newline \textit{N.B.: It is worth noting that performing these same steps on households from within the \gls{refit} data set exhibit similar results.}
+    \end{enumerate}
+\end{adjustwidth}
+
+\section{Stage 3 - Data Preprocessing}
+\label{sec:Methodology:Stage-3}
+
+\section{Stage 4 - Training and Validating our Network}
+\label{sec:Methodology:Stage-4}
