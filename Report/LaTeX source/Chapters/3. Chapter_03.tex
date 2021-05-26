@@ -56,7 +56,7 @@ Depending on how we choose to transform our data set(s) each individual candidat
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{Images/Chapter 3/t-SNE/t-SNE-Illustration-1.png}
+    \includegraphics[width=\textwidth]{Images/Chapter 3/t-SNE/t-SNE-Illustration-1.pdf}
     \caption{Overlapping both a Gaussian distribution and the t-Student, or Cauchy, distribution. Note the heavy tails on the t-Student distribution.}
     \label{fig:t-SNE-Illustration}
 \end{figure}
@@ -119,7 +119,7 @@ queryNeighborhood(P, eps)
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{Images/Chapter 3/DBSCAN/DBSCAN-Illustration.png}
+    \includegraphics[width=\textwidth]{Images/Chapter 3/DBSCAN/DBSCAN-Illustration.pdf}
     \caption{Depiction of the \gls{dbscan} algorithm at work with minPts set to 4. Here, point A, as well as the other red points, are core points as the area surrounding these points in a radius $\epsilon$ contains at least 4 points (including the point itself). Points B and C are reachable from A through other core points and as a result can be considered density-reachable points. The cluster is made up of the core points as well as points B and C. Point N is neither a core point and cannot be reached through any of the core points and so is considered an outlier. Image source: \cite{Wikipedia_DBSCAN}, licensed under CC BY-SA 3.0.}
     \label{fig:DBSCAN-Illustration}
 \end{figure}
@@ -129,41 +129,41 @@ queryNeighborhood(P, eps)
 \glsentryfull{hdbscan}, proposed by \citet{Campello}, is a hierarchical non-parametric clustering algorithm that was designed to overcome the main limitations of \gls{dbscan}. The most substantial changes come in the form of no longer explicitly needing to predefine a value for the distance threshold $\epsilon$. Instead, \gls{hdbscan} generates a complete density-based clustering hierarchy over variable densities from which we can extract a simplified hierarchy composed only of the most significant clusters in our data. Without delving deep into the concepts of cluster stability, minimum spanning trees and hierarchy construction we instead refer the reader to the detailed explanation in the literature \cite{Campello} and leave off with Figure \ref{fig:HDBSCAN-Illustration} that does well to illustrate how \gls{hdbscan} works as a hierarchical clustering algorithm.
 
 \begin{figure}[H]
-        \begin{adjustwidth*}{-3.0cm}{-3.0cm}%
+        \begin{adjustwidth}{-3.0cm}{-3.0cm}%
                 \myfloatalign
                 \subfloat[\gls{hdbscan} clustering applied in the case of 3 clusters.]
                 {
-                        \includegraphics[width=0.7\textwidth]{Images/Chapter 3/HDBSCAN/HDBSCAN-Illustration-1.1.png}
+                        \includegraphics[width=0.7\textwidth]{Images/Chapter 3/HDBSCAN/HDBSCAN-Illustration-1.1.pdf}
                         \label{fig:HDBSCAN-Illustration-1.1}
                 } \quad
                 \subfloat[\gls{hdbscan} clustering applied in the case of 2 clusters.]
                 {
-                        \includegraphics[width=0.7\textwidth]{Images/Chapter 3/HDBSCAN/HDBSCAN-Illustration-2.1.png}
+                        \includegraphics[width=0.7\textwidth]{Images/Chapter 3/HDBSCAN/HDBSCAN-Illustration-2.1.pdf}
                         \label{fig:HDBSCAN-Illustration-2.1}
                 } \quad
                 \subfloat[Cluster hierarchy of \ref{fig:HDBSCAN-Illustration-1.1}.]
                 {
-                        \includegraphics[width=0.7\textwidth]{Images/Chapter 3/HDBSCAN/HDBSCAN-Illustration-1.2.png}
+                        \includegraphics[width=0.7\textwidth]{Images/Chapter 3/HDBSCAN/HDBSCAN-Illustration-1.2.pdf}
                         \label{fig:HDBSCAN-Illustration-1.2}
                 } \quad
                 \subfloat[Cluster hierarchy of \ref{fig:HDBSCAN-Illustration-2.1}.]
                 {
-                        \includegraphics[width=0.7\textwidth]{Images/Chapter 3/HDBSCAN/HDBSCAN-Illustration-2.2.png}
+                        \includegraphics[width=0.7\textwidth]{Images/Chapter 3/HDBSCAN/HDBSCAN-Illustration-2.2.pdf}
                         \label{fig:HDBSCAN-Illustration-2.2}
                 } \quad
                 \subfloat[Density landscape of \ref{fig:HDBSCAN-Illustration-1.1}.]
                 {
-                        \includegraphics[width=0.7\textwidth]{Images/Chapter 3/HDBSCAN/HDBSCAN-Illustration-1.4.png}
+                        \includegraphics[width=0.7\textwidth]{Images/Chapter 3/HDBSCAN/HDBSCAN-Illustration-1.4.pdf}
                         \label{fig:HDBSCAN-Illustration-1.4}
                 } \quad
                 \subfloat[Density landscape of \ref{fig:HDBSCAN-Illustration-2.1}.]
                 {
-                        \includegraphics[width=0.7\textwidth]{Images/Chapter 3/HDBSCAN/HDBSCAN-Illustration-2.4.png}
+                        \includegraphics[width=0.7\textwidth]{Images/Chapter 3/HDBSCAN/HDBSCAN-Illustration-2.4.pdf}
                         \label{fig:HDBSCAN-Illustration-2.4}
                 } \quad
                 \caption{An illustration of the hierarchical aspects of the \gls{hdbscan} algorithm. In layman's terms, when presented with the density landscape the \gls{hdbscan} algorithm decides whether peaks of a mountain are part of the same mountain or whether they belong to different mountains where each of these mountains represent a cluster. When multiple peaks represent multiple mountains the sum of their respective volumes tends to be larger than the volume of their base. The opposite is true for when multiple peaks are just features of a singular mountain.}
                 \label{fig:HDBSCAN-Illustration}
-        \end{adjustwidth*}
+        \end{adjustwidth}
 \end{figure}
 
 \clearpage
@@ -216,21 +216,21 @@ When working with time series data sets, \gls{dtw} provides us with the means of
 \noindent Figure \ref{fig:DTW-Illustration} denotes an example of how we can calculate the \gls{dtw} path of 2 sequences of length 6. The first sequence contains the values [1, 2, 6, 3, 1, 3] and the second sequence contains the values [2, 6, 3, 1, 2, 7].
 
 \begin{figure}[hbt!]
-        \begin{adjustwidth*}{-0.5cm}{-0.5cm}%
+        \begin{adjustwidth}{-0.5cm}{-0.5cm}%
                 \myfloatalign
                 \subfloat[Accumulated cost matrix and warping path.]
                 {
-                        \includegraphics[width=0.5\textwidth]{Images/Chapter 3/DTW/DTW-Illustration-1.png}
+                        \includegraphics[width=0.5\textwidth]{Images/Chapter 3/DTW/DTW-Illustration-1.pdf}
                         \label{fig:DTW-Illustration-1}
                 } \quad
                 \subfloat[DTW distance between our 2 sequences.]
                 {
-                        \includegraphics[width=0.5\textwidth]{Images/Chapter 3/DTW/DTW-Illustration-2.png}
+                        \includegraphics[width=0.5\textwidth]{Images/Chapter 3/DTW/DTW-Illustration-2.pdf}
                         \label{fig:DTW-Illustration-2}
                 } \quad
                 \caption{An illustration depicting how we can use \gls{dtw} to calculate the distance between 2 sequences.}
                 \label{fig:DTW-Illustration}
-        \end{adjustwidth*}
+        \end{adjustwidth}
 \end{figure}
 
 \section{Forecasting Models}
@@ -247,7 +247,7 @@ Firstly, and most importantly, \glspl{cnn} derive their name from the so-called 
 
 \begin{figure}[hbt!]
     \centering
-    \includegraphics[width=\textwidth]{Images/Chapter 3/CNN/Convolution-Illustration.png}
+    \includegraphics[width=\textwidth]{Images/Chapter 3/CNN/Convolution-Illustration.pdf}
     \caption{An example of a convolutional kernel at work. A 3x3 kernel traverses over a 5x5 "image" with a stride of 1 to produce the convolved feature map.}
     \label{fig:Convolution-Illustration}
 \end{figure}
@@ -265,7 +265,7 @@ Following every convolution operation is a \gls{relu} operation where \gls{relu}
 
 \begin{figure}[hbt!]
     \centering
-    \includegraphics[width=\textwidth]{Images/Chapter 3/CNN/ReLU-Illustration.png}
+    \includegraphics[width=\textwidth]{Images/Chapter 3/CNN/ReLU-Illustration.pdf}
     \caption{A simplified demonstration of a \gls{relu} operation.}
     \label{fig:ReLU-Illustration}
 \end{figure}
@@ -276,7 +276,7 @@ Inter-mingled between convolutional layers are a set of pooling layers that serv
 
 \begin{figure}[hbt!]
     \centering
-    \includegraphics[width=\textwidth]{Images/Chapter 3/CNN/Max-Pooling-Illustration.png}
+    \includegraphics[width=\textwidth]{Images/Chapter 3/CNN/Max-Pooling-Illustration.pdf}
     \caption{An example of max pooling using a 2x2 window.}
     \label{fig:Max-Pooling-Illustration}
 \end{figure}
@@ -289,7 +289,7 @@ Inter-mingled between convolutional layers are a set of pooling layers that serv
 
 \begin{figure}[hbt!]
     \centering
-    \includegraphics[width=\textwidth]{Images/Chapter 3/LSTM/LSTM-Chain-Illustration.png}
+    \includegraphics[width=\textwidth]{Images/Chapter 3/LSTM/LSTM-Chain-Illustration.pdf}
     \caption{The repeating module in an \gls{lstm} that contains four interacting layers. Image source: \cite{Colah}  (with permission from the author).}
     \label{fig:LSTM-Chain-Illustration}
 \end{figure}
@@ -305,7 +305,7 @@ The first gate that we will be taking a look at is the forget gate $(f_t)$. This
 
 \begin{figure}[hbt!]
     \centering
-    \includegraphics[width=0.75\textwidth]{Images/Chapter 3/LSTM/LSTM-Forget-Gate-Illustration.png}
+    \includegraphics[width=0.75\textwidth]{Images/Chapter 3/LSTM/LSTM-Forget-Gate-Illustration.pdf}
     \caption{An illustration of the forget gate in an \gls{lstm} network. Image source: \cite{Colah}  (with permission from the author).}
     \label{fig:LSTM-Forget-Gate-Illustration}
 \end{figure}
@@ -324,7 +324,7 @@ The input gate $(i_t)$ mainly serves to decide what new information will be stor
 
 \begin{figure}[hbt!]
     \centering
-    \includegraphics[width=0.75\textwidth]{Images/Chapter 3/LSTM/LSTM-Input-Gate-Illustration.png}
+    \includegraphics[width=0.75\textwidth]{Images/Chapter 3/LSTM/LSTM-Input-Gate-Illustration.pdf}
     \caption{An illustration of the input gate in an \gls{lstm} network. Image source: \cite{Colah} (with permission from the author).}
     \label{fig:LSTM-Input-Gate-Illustration}
 \end{figure}
@@ -344,7 +344,7 @@ The final gate is the output gate $(o_t)$ which decides what the next hidden sta
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\textwidth]{Images/Chapter 3/LSTM/LSTM-Output-Gate-Illustration.png}
+    \includegraphics[width=0.75\textwidth]{Images/Chapter 3/LSTM/LSTM-Output-Gate-Illustration.pdf}
     \caption{An illustration of the output gate in an \gls{lstm} network. Image source: \cite{Colah}  (with permission from the author).}
     \label{fig:LSTM-Output-Gate-Illustration}
 \end{figure}
