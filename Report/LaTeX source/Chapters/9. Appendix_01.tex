@@ -49,9 +49,29 @@
                         Snow Depth                               & The snow depth liquid-water-equivalent. Units in cm.                                                                                                                                                                                                      \\
                         \gls{gti} Horizontal Single-Axis Tracker & The total irradiance received on a sun-tracking surface.  Units in W/m2.                                                                                                                                                                                  \\
                         \gls{gti} Fixed                          & The total irradiance received on a surface with a fixed tilt. The tilt is set to latitude of the location.  Units in W/m2.                                                                                                                                \\
-                        Albedo                                   & Average daytime surface reflectivity of visible light, expressed as a value between 0 and 1. 0 represents complete absorption. 1 represents complete reflection.                                                                                          \\
+                        Albedo                                   & Average daytime surface reflectivity of visible light, expressed as a value between 0 and 1. 0 represents complete absorption. 1 represents complete reflection.                                                                                          \\ \bottomrule
                 \end{tabularx}
                 \caption{List of meteorological parameters available to us as per the Solcast data sets as outlined in Section \ref{sec:Data-Description:Meteorological-Data}.}
                 \label{tab:Solcast-parameters}
         \end{adjustwidth*}
+\end{table}
+
+\begin{table}[H]
+    \begin{adjustwidth*}{-3.0cm}{-3.0cm}%
+        \myfloatalign
+        \centering
+        \begin{tabularx}{\linewidth}{cX} \toprule
+                \tableheadline{Variable} & \tableheadline{Description}                                                                                            \\ \midrule
+                Day                      & An integer value between 1 and 31.                                                                                     \\
+                Weekday                  & An integer value between 0 and 6 denoting the different days of the week.                                              \\
+                Month                    & An integer value between 1 and 12.                                                                                     \\
+                Year                     & An integer value between 2007 and 2010.                                                                                \\
+                Hour                     & An integer value between 0 and 23.                                                                                     \\
+                Minute                   & An integer value between 0 and 45 in increments of 15.                                                                 \\
+                Season                   & An integer value between 0 and 3 where 0 denotes Spring, 1 denotes Summer, 2 denotes Fall and 3 denotes Winter.        \\
+                Holiday                  & A categorical variable that takes on an integer value of 1 when the day concerned is a public holiday and 0 otherwise. \\ \bottomrule
+        \end{tabularx}
+        \caption{List of temporal variables that are taken into consideration during the feature engineering process as outlined in Section \ref{sec:Methodology:Stage-3}.}
+        \label{tab:Temporal-variables}
+    \end{adjustwidth*}
 \end{table}

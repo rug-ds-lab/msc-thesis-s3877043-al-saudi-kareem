@@ -3,10 +3,12 @@
 This paper proposes a forecasting method that utilizes dimensionality reduction and clustering techniques to group days that exhibit similarity in terms of electric consumption behaviour. Days that are grouped into the same cluster are thought to contain shared features, whether those features be temporal or meteorological or otherwise, that cause this similarity in behaviour. The formed clusters (per household) are used for 2 purposes: firstly, they will be used to train a classification model that utilizes available context information to assign a new day to the correct cluster. Secondly, and finally, a novel deep learning method will be applied on a per-cluster basis to forecast future energy consumption. An outline of the proposed method can be seen in Figure \ref{fig:Proposed-Model}.
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{Images/Chapter 6/Proposed-Model.pdf}
-    \caption{Proposed daily profile extraction and load forecasting model.}
-    \label{fig:Proposed-Model}
+    \begin{adjustwidth}{-3.0cm}{-3.0cm}%
+        \centering
+        \includegraphics[width=\linewidth]{Images/Chapter 6/Proposed-Model.pdf}
+        \caption{Proposed daily profile extraction and load forecasting model.}
+        \label{fig:Proposed-Model}
+    \end{adjustwidth}
 \end{figure}
 
 \section{Stage 1 - Data Collection and Cleaning}
@@ -73,19 +75,18 @@ This paper proposes a forecasting method that utilizes dimensionality reduction 
             \label{fig:UCID-HDBSCAN-V1}
         \end{figure}
         
-        \noindent \newline Following this, Figures \ref{fig:UCID-HDBSCAN-V2} and \ref{fig:UCID-HDBSCAN-V3} help us visualize the distribution of the clusters on the months of the year as well as the days of the week to ascertain whether any of the clusters present any correlation with these temporal variables. Given that the initial spread of the data throughout the months of the year and days of the week of the \gls{ucid} were relatively uniform, we should not see any bias towards any particular month or day in either Figure \ref{fig:UCID-HDBSCAN-V2} or Figure \ref{fig:UCID-HDBSCAN-V3} respectively.
-        
+        \noindent \newline Following this, Figures \ref{fig:UCID-HDBSCAN-V2} and \ref{fig:UCID-HDBSCAN-V3} help us visualize the distribution of the clusters over the months of the year as well as the days of the week to ascertain whether any of the clusters present any correlation with these temporal variables. Given that the initial spread of the data throughout the months of the year and days of the week of the \gls{ucid} were relatively uniform, we should not see any bias towards any particular month or day in either Figure \ref{fig:UCID-HDBSCAN-V2} or Figure \ref{fig:UCID-HDBSCAN-V3} respectively.
         
         \begin{figure}[H]
             \centering
-            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-HDBSCAN-V2.pdf}
+            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-HDBSCAN-V2.1.pdf}
             \caption{Distribution of the clusters over the different months of the year.}
             \label{fig:UCID-HDBSCAN-V2}
         \end{figure}
         
         \begin{figure}[H]
             \centering
-            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-HDBSCAN-V3.pdf}
+            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-HDBSCAN-V3.1.pdf}
             \caption{Distribution of the clusters over the different days of the week.}
             \label{fig:UCID-HDBSCAN-V3}
         \end{figure}
@@ -103,8 +104,73 @@ This paper proposes a forecasting method that utilizes dimensionality reduction 
     \end{enumerate}
 \end{adjustwidth}
 
-\section{Stage 3 - Data Preprocessing}
+\section{Stage 3 - Further Data Preprocessing}
 \label{sec:Methodology:Stage-3}
+\begin{adjustwidth}{-1.65cm}{-0.0cm}%
+    \begin{enumerate}[label=Step 3.\arabic*:, leftmargin=*]
+    \item The details pertaining to the majority of the steps undertaken throughout the entirety of stage 3 of the proposed model have, to an extent, been explained in-depth during the \gls{eda} performed in Sections \ref{sec:Exploratory-Data-Analysis:REFIT} and \ref{sec:Exploratory-Data-Analysis:UCID}. Nonetheless, a brief summary will be provided as part of Chapter \ref{ch:Methodology}. The first step undertaken, again on a per-cluster basis, is to append both temporal data as well as meteorological data to our data sets. Table \ref{tab:Temporal-variables} pertains to the temporal variables that we will be taken into consideration as part of this feature engineering step while Table \ref{tab:Solcast-parameters} pertains to the obtained, historical meteorological data that concern the regions associated with our data sets. Incidentally, as outlined in Table \ref{tab:Temporal-variables}, the temporal variables we have chosen to append do not hold much value given their current format. This is due mostly in part to their cyclical nature (think of how the 23rd hour of the day is rather close to hours 0 and 1). To handle this we can encode our temporal variables (for example, through the use of both the sine and cosine function) in an attempt to transpose our linear interpretation of time into a cyclical state that can be better interpreted by our deep learning model further down the line. The result of performing this so-called encoding can be seen in both Figures \ref{fig:Temporal-Illustration-1} and \ref{fig:Temporal-Illustration-2}.
+    
+    \begin{figure}[H]
+        \begin{adjustwidth}{-3.0cm}{-3.0cm}%
+                \myfloatalign
+                \subfloat[Representing the time of the day as a combination of both sine and cosine waves. ]
+                {
+                        \includegraphics[width=0.7\textwidth]{Images/Chapter 6/Temporal_Illustration/Temporal_Illustration_1.pdf}
+                        \label{fig:Temporal-Illustration-1}
+                } \quad
+                \subfloat[Visualizing our cyclical encoding of the time of day.]
+                {
+                        \includegraphics[width=0.7\textwidth]{Images/Chapter 6/Temporal_Illustration/Temporal_Illustration_2.pdf}
+                        \label{fig:Temporal-Illustration-2}
+                } \quad
+                \caption{By utilizing a combination of the sine function and the cosine function, we eliminate the possibility that two different times would receive the same value had we used either function independently. The combination of both functions can be thought of as an artifical 2-axis coordinate system that represents the time of day.}
+        \end{adjustwidth}
+    \end{figure}
+    
+    \item Following the feature engineering process, the feature selection process (or feature minimization process), heavily revolves around minimizing the overall number of features that do not serve as good predictors of our target variable. This has been explored predominantly in Sections \ref{subsec:Exploratory-Data-Analysis:REFIT:Causality-and-Correlation} and \ref{subsec:Exploratory-Data-Analysis:UCID:Causality-and-Correlation}. To summarize on the steps undertaken in the sections mentioned prior -- we performed a series of tests to determine whether our variables (temporal or meteorological) present a significant level of, independent (or combinatorial), correlation or causation against our target variable for each of the \gls{refit} and \gls{ucid} data sets. The primary tests conducted revolved around the concepts of Granger Causality and mutual information gain although other factors (such as a per-variable variance threshold) were also looked into. In lieu of repeating content and prolonging this section, we refer the reader to the results we procured in the previously mentioned sections.
+    
+    \item When taking our target variable into consideration, the notion of outliers (and how to deal with them), is inevitable. Scaling the values in such a fashion that accounts for outliers is one possibility whilst defining a threshold and trimming outlier values is another possibility. Alternatively, leaving them in is another possibility as some level of noise is unavoidable in the data collection process and training our models on unrealistically curated data does not serve to produce an accurate representation of a real-life scenario in which a model of this calibre could be applied. Nonetheless, we explore a few possibilities with respect to dealing with outlier values. One possibility, assuming a Gaussian distribution of the values of our target variable, would be to remove all values that fall a pre-defined number of standard deviations, generally 2 or 3, away from the mean. Unfortunately, the distribution of our target variable do not fall under this pre-condition (as seen in Figure \ref{fig:UCID-GAP-Distribution}) and so this is not a feasible option. Another method, explored during prior, related research \cite{Kareem}, worked on the basis of defining an upper and lower bound based on the \gls{iqr}. The \gls{iqr} is calculated as the difference between the 75th (Q3) and 25th (Q1) percentiles of the data and comprises the box in a traditional box and whiskers plot. Using the \gls{iqr} we can define outliers as any values that are a pre-defined factor below the 25th percentile or above the 75th percentile as follows:
+    
+    \begin{equation}
+        Q1 - (1.5 * IQR) < x < Q3 + (1.5 * IQR)
+    \label{eq:IQR-Outliers}
+    \end{equation}
+    
+    \noindent \newline Figures \ref{fig:UCID-Box-and-Whiskers-GAP-Out} and \ref{fig:UCID-Box-and-Whiskers-GAP-NoOut} represent the distribution of values for our target variable over the different months of the year both before and after removing outliers respectively.
+    
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-GAP-Distribution.pdf}
+        \caption{Distribution of values with regards to our target variable.}
+        \label{fig:UCID-GAP-Distribution}
+    \end{figure}
+    
+    \begin{figure}[hbt!]
+        \begin{adjustwidth}{-3.0cm}{-3.0cm}%
+                \myfloatalign
+                \subfloat[Before removing outliers.]
+                {
+                        \includegraphics[width=0.7\textwidth]{Images/Chapter 6/UCID/UCID-Box-and-Whiskers-GAP-Out.pdf}
+                        \label{fig:UCID-Box-and-Whiskers-GAP-Out}
+                } \quad
+                \subfloat[After removing outliers.]
+                {
+                        \includegraphics[width=0.7\textwidth]{Images/Chapter 6/UCID/UCID-Box-and-Whiskers-GAP-NoOut.pdf}
+                        \label{fig:UCID-Box-and-Whiskers-GAP-NoOut}
+                } \quad
+                \caption{Illustrating the distribution of values with respect to the global active power of the \gls{ucid} data set both before and after removing outlier values as defined by Equation \ref{eq:IQR-Outliers}.}
+        \end{adjustwidth}
+    \end{figure}
+    
+    \noindent \newline \textit{Smoothing}
+    \end{enumerate}
+\end{adjustwidth}
 
-\section{Stage 4 - Training and Validating our Network}
+\section{Stage 4 - Training and Testing}
 \label{sec:Methodology:Stage-4}
+
+\subsection{Stage 4.1 - Classification Tree}
+\label{subsec:Methodology:Stage-4:Classification-Tree}
+
+\subsection{Stage 4.2 - CNN-LSTM Network}
+\label{subsec:Methodology:Stage-4:CNN-LSTM-Network}
