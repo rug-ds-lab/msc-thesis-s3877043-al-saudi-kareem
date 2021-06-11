@@ -18,20 +18,20 @@ The chief issue that this paper seeks to address is that of creating interesting
 \noindent \newline Further compounding on this \citet{Kong} attempted to justify the observations made by \citet{Stephen} by using a density-based clustering technique known as \gls{dbscan} \cite{Ester} to evaluate consistency in short-term load profiles. They remark on the benefits of using \gls{dbscan} stating that as it does not require knowing the number of clusters in the data ahead of time and as it contains the notion of outliers it would be an ideal clustering technique to identify consumption patterns that repeat with a measure of noise akin to what is loosely defined by Practice Theory. Their findings are that the number of clusters as well as outliers varies greatly between households with some households exhibiting no clearly discernible patterns and some households (mostly) following fairly consistent daily profiles. This is visualized in Figures \ref{fig:Kong-Case-1} and \ref{fig:Kong-Case-2}.
 
 \begin{figure}[hbt!]
-        \begin{adjustwidth*}{-0.5cm}{-0.5cm}%
+        \begin{adjustwidth}{-0.5cm}{-0.5cm}%
                 \myfloatalign
                 \subfloat[A case with only one outlier alongside two major clusters and two minor clusters.]
                 {
-                        \includegraphics[width=0.5\textwidth]{Images/Chapter 2/Kong/Case-1.PNG}
+                        \includegraphics[width=0.5\textwidth]{Images/Chapter 2/Kong/Case-1.pdf}
                         \label{fig:Kong-Case-1}
                 } \quad
                 \subfloat[A case with no clusters at all.]
                 {
-                        \includegraphics[width=0.5\textwidth]{Images/Chapter 2/Kong/Case-2.PNG}
+                        \includegraphics[width=0.5\textwidth]{Images/Chapter 2/Kong/Case-2.pdf}
                         \label{fig:Kong-Case-2}
                 } \quad
                 \caption{Two widely different scenarios in the application of \gls{dbscan}. Images source: \cite{Kong} \citeIEEE{Kong}.}
-        \end{adjustwidth*}
+        \end{adjustwidth}
 \end{figure}
 
 \noindent \newline \citet{Yildiz} expand on traditional load forecasting techniques, such as the \gls{smbm} that they had previously presented \cite{Yildiz2}, and present their own take in the form of a \gls{ccf} model. In traditional \glspl{smbm}, a chosen model, whether that be of a statistical variant or from the plethora of existing machine learning models, learns the relationship between the target forecasted loads when presented with some input data which, in our case, consists of some historical lags in terms of energy consumption, data with regards to the weather and temporal information with respect to the time, calendar date etc. The \gls{ccf} takes this a step further by making use of both K-means and Kohonen's \glspl{som} \cite{Kohonen} to group profiles that are most similar to each other. After obtaining and validating the output of their chosen clustering techniques they investigate the relationship between the clustering output and other temporal variables, such as the weather, by using a \gls{cart} method \cite{James}.
@@ -51,7 +51,7 @@ Numerous studies have been conducted with the intent to forecast energy consumpt
 Table \ref{tab:Algorihm-Comparison} depicts the wide variety in the different methods explored throughout the duration of chapter \ref{ch:Related-Work}. Major takeaways here are that the use of \glspl{som} alongside \gls{dbscan} and a \gls{cnn-lstm} could lead to substantial improvements in load forecasting accuracy as well as provide us with energy profiles that allow us to better understand the habits present on the smaller-scale individual household level and so the proposed method, outlined in chapter \ref{ch:Methodology}, will be based on these concepts.
 
 \begin{table}[H]
-        \begin{adjustwidth*}{-3.0cm}{-3.0cm}%
+        \begin{adjustwidth}{-3.0cm}{-3.0cm}%
                 \centering
                 \myfloatalign
                 \begin{tabular}{cccc} \toprule
@@ -65,5 +65,5 @@ Table \ref{tab:Algorihm-Comparison} depicts the wide variety in the different me
                 \end{tabular}
                 \caption{Outline of related work in the field of energy profile construction and load forecasting.}
                 \label{tab:Algorihm-Comparison}
-        \end{adjustwidth*}
+        \end{adjustwidth}
 \end{table}
