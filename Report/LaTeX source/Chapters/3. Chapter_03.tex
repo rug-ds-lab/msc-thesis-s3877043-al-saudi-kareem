@@ -372,14 +372,13 @@ The first performance metric that we will be taking a look at is the \gls{mae}. 
         n           &   total number of data points.
 \end{conditions*}
 
-\subsection{Root Mean Squared Error}
-\label{subsec:Background-Information:Performance-Metrics:Root-Mean-Squared-Error}
-The second performance metric that we will be working with is the \gls{rmse}. Its primary purpose is to serve as a cost function that our forecasting models will seek to minimize. The primary reason behind choosing \gls{rmse} as our cost function is that it penalizes larger errors. Its equation is:
+\subsection{Mean Absolute Percentage Error}
+\label{subsec:Background-Information:Performance-Metrics:Mean-Absolute-Percentage-Error}
+The second performance metric we will be taking a look at is the \glsentryfull{mape}. As it is a scale-invariant metric, its primary purpose is to allow us to assess the performance of our forecasting models across the multiple, disparate data sets we have on hand and draw comparisons between them. Its equation is:
 
 \begin{equation}
-\centering
-    \text{RMSE} = \sqrt{\frac{\sum\limits_{i = 1}^{n} (\hat{y_i} - y_i)^2}{n}}
-\label{eq:RMSE}
+    \text{MAPE} = \frac{1}{n} \sum\limits_{i = 1}^{n} \abs{\frac{\hat{y_i} - y_i}{y_i}}
+\label{eq:MAPE}
 \end{equation}
 
 \noindent where:
@@ -390,13 +389,14 @@ The second performance metric that we will be working with is the \gls{rmse}. It
         n           &   total number of data points.
 \end{conditions*}
 
-\subsection{Mean Absolute Percentage Error}
-\label{subsec:Background-Information:Performance-Metrics:Mean-Absolute-Percentage-Error}
-The final performance metric we will be taking a look at is the \glsentryfull{mape}. As it is a scale-invariant metric, its primary purpose is to allow us to assess the performance of our forecasting models across the multiple, disparate data sets we have on hand and draw comparisons between them. Its equation is:
+\subsection{Log-Cosh Loss}
+\label{subsec:Background-Information:Performance-Metrics:Log-Cosh-Loss}
+The final metric that we will be working with is the log-cosh function. Its primary purpose is to serve as a cost function that our forecasting models will seek to minimize. The primary reason behind choosing log-cosh to act as our cost function is that it is robust against the occasional wildly incorrect prediction that our networks are bound to make. Its equation is:
 
 \begin{equation}
-    \text{MAPE} = \frac{1}{n} \sum\limits_{i = 1}^{n} \abs{\frac{\hat{y_i} - y_i}{y_i}}
-\label{eq:MAPE}
+\centering
+    \text{Log-Cosh L} = \sum\limits_{i = 1}^{n} \log(\cosh{(\hat{y}_i - y_i)})
+\label{eq:Log-Cosh}
 \end{equation}
 
 \noindent where:
