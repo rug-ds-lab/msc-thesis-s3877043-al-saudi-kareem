@@ -1,6 +1,6 @@
 \chapter{Background Information}
 \label{ch:Background-Information}
-This chapter will serve predominantly to explain concepts and methods relevant to the research conducted throughout the duration of this project. Most, if not all, of the information in this chapter might be considered prior knowledge to most readers but regardless may still suffice as a brisk refresher. Feel free to click \hyperref[ch:Data-Description]{here} if you would prefer to skip this chapter.
+This chapter serves predominantly to explain concepts and methods relevant to the research. This includes dimensionality reduction techniques, such as \glsentryfull{t-sne} and \glsentryfull{umap}, as well as our chosen clustering and forecasting techniques (\glsentryfull{hdbscan} and \glsentryfull{cnn-lstm} respectively). Most, if not all, of the information in this chapter might be considered prior knowledge to most readers but regardless may still suffice as a brisk refresher. Feel free to click \hyperref[ch:Exploratory-Data-Analysis]{here} if you would prefer to skip this chapter.
 
 \section{Dimension Reduction}
 \label{sec:Background-Information:Dimension-Reduction}
@@ -52,7 +52,7 @@ Depending on how we choose to transform our data set(s) each individual candidat
 \label{eq:tSNE-6}
 \end{equation}
 
-\noindent \newline The choice of using the so-called t-Student (or Cauchy) distribution, as seen in Equation \ref{eq:tSNE-4}, for the map points as opposed to the Gaussian distribution used for the original data points is to alleviate the \textit{crowding problem}. This problem is defined in the original paper as follows -- "the area of the two-dimensional map that is available to accommodate moderately distant data points will not be nearly large enough compared with the area available to accommodate nearby data points". In essence, using the same Gaussian distribution for the original data points and the map points would lead to an imbalance in the distribution of the distances of a point's neighbors due to the fact that the distribution of the distances varies vastly between high-dimensional spaces and low-dimensional spaces. By using the t-Student distribution, points close in the high-dimensional, original space get even closer in the lower-dimensional, mapping space while points that are further away from each other in the high-dimensional, original space get even further in the lower-dimensional, mapping space. The differences between both distributions can be seen in Figure \ref{fig:t-SNE-Illustration}.
+\noindent \newline The choice of using the so-called t-Student (or Cauchy) distribution, as seen in Equation \ref{eq:tSNE-4}, for the map points as opposed to the Gaussian distribution used for the original data points is to alleviate the \textit{crowding problem}. This problem is defined in the original paper as follows -- "the area of the two-dimensional map that is available to accommodate moderately distant data points will not be nearly large enough compared with the area available to accommodate nearby data points".
 
 \begin{figure}[H]
     \centering
@@ -61,11 +61,22 @@ Depending on how we choose to transform our data set(s) each individual candidat
     \label{fig:t-SNE-Illustration}
 \end{figure}
 
+\noindent \newline In essence, using the same Gaussian distribution for the original data points and the map points would lead to an imbalance in the distribution of the distances of a point's neighbors due to the fact that the distribution of the distances varies vastly between high-dimensional spaces and low-dimensional spaces. By using the t-Student distribution, points close in the high-dimensional, original space get even closer in the lower-dimensional, mapping space while points that are further away from each other in the high-dimensional, original space get even further in the lower-dimensional, mapping space. The differences between both distributions can be seen in Figure \ref{fig:t-SNE-Illustration}.
+
 \noindent \newline To round things off, we note that the \gls{t-sne} algorithm is heavily reliant on the hyperparameters chosen on initialization (predominantly with respect to the chosen value for \textit{perplexity}) and, as it is a stochastic algorithm, different runs performed on the same data set will produce different, albeit similar, results. Furthermore, standard deviations between clusters (or cluster size in terms of bounding box measurements) are not representative of the relative sizes of the actual clusters and generally mean nothing. Finally, distances between clusters in the mapping space does not always give us a good sense of the global geometry -- that is, in the sense that distance between clusters may (or may not) mean anything significant.
 
 \subsubsection{Uniform Manifold Approximation and Projection}
 \label{subsec:Background-Information:Dimension-Reduction:t-Distributed-Stochastic-Neighbor-Embedding:Uniform-Manifold-Approximation-and-Projection}
-Although \gls{t-sne} is fine to use as a dimensionality reduction technique it is predominantly cited as a visualization heuristic. Interpreting the resulting map obtained from performing or otherwise executing the algorithm must generally be done with some measure of caution. A novel algorithm proposed by \citet{UMAP}, and aptly named \glsentryfull{umap} claims to be competitive with \gls{t-sne} in terms of visualization quality and argues that it preserves more of the global structure present in the data while being superior in terms of run time performance. Given the novelty of the algorithm, it lacks the rigorous testing and mathematical analysis that its counterpart, the \gls{t-sne} algorithm, is subject to. Nonetheless, we will be making use of the \gls{umap} algorithm for the purpose of this project and refer the reader to the original paper located \href{https://arxiv.org/abs/1802.03426}{here} \cite{UMAP} to better understand the core concepts of the algorithm as well as what differentiates it from the \gls{t-sne} algorithm.
+Although \gls{t-sne} is fine to use as a dimensionality reduction technique it is predominantly cited as a visualization heuristic. Interpreting the resulting map obtained from performing or otherwise executing the algorithm must generally be done with some measure of caution. A novel algorithm proposed by \citet{UMAP}, and aptly named \glsentryfull{umap} claims to be competitive with \gls{t-sne} in terms of visualization quality and argues that it preserves more of the global structure present in the data while being superior in terms of run time  performance (\eg taking a mere 3 minutes to project the 784-dimensional, 70,000 point MNIST data set in contrast to the 45 minutes it would take for the \gls{t-sne} algorithm \cite{UMAP2}). Given the novelty of the algorithm, it lacks the rigorous testing and mathematical analysis that its counterpart, the \gls{t-sne} algorithm, is subject to. Nonetheless, we will be making use of the \gls{umap} algorithm for the purpose of this project and refer the reader to the original paper located \href{https://arxiv.org/abs/1802.03426}{here} \cite{UMAP} to better understand the core concepts of the algorithm as well as what differentiates it from the \gls{t-sne} algorithm.
+
+\noindent \newline At its core, \gls{umap} works very similarly to the \gls{t-sne} algorithm. The biggest difference between the output of the \gls{umap} algorithm in comparison to the output of the \gls{t-sne} algorithm is the balance between local as well as global structure. Given that the authors of the \gls{umap} algorithm claim that it is often better at preserving global structure in the final projection in comparison to the \gls{t-sne} algorithm, it is safe to assume that inter-cluster relations are probably more meaningful than the projections made by the \gls{t-sne} algorithm. This preservation of global structure when running both algorithms under a similar set of hyperparameters can be seen in Figure \ref{fig:UMAP-Illustration}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\textwidth]{Images/Chapter 3/t-SNE/UMAP-Illustration.pdf}
+    \caption{Illustrating how the \gls{umap} algorithm captures more of the global structure in a sample data set (Mammoth data set). Image source: \cite{Wang2}, licensed under CC BY-SA 4.0.}
+    \label{fig:UMAP-Illustration}
+\end{figure}
 
 \clearpage
 
@@ -77,7 +88,7 @@ Throughout the duration of this project we will be making use of the \gls{hdbsca
 \label{subsec:Background-Information:Clustering-Algorithms:DBSCAN}
 \glsentryfull{dbscan}, proposed by \citet{Ester}, is a non-parametric data clustering algorithm that works on the principle of grouping together points that are closely packed together (\ie located in high-density regions) while marking points that lie alone in low-density regions as outliers. This allows the \gls{dbscan} algorithm to find arbitrarily shaped clusters while also rendering it robust to noise present in the data. Furthermore, the \gls{dbscan} algorithm does not require us to specify, or otherwise know ahead of time, the number of clusters that our data contains and instead automatically determines this number based on the input data as well as the hyperparameters passed to the algorithm on its initialization. This leads us to the very first downside associated with the \gls{dbscan} algorithm and that is that it is \textit{exceptionally} sensitive to hyperparameter selection and thus it is imperative to have a solid grasp on the understanding of said hyperparameters so as to obtain ideal and meaningful results.
 
-\noindent \newline The \gls{dbscan} algorithm classifies points in a feature space as either core points, density-reachable points, and outliers. To best understand how this is done we must first define the two hyperparameters that are essential to the initialization of the algorithm. The first, and arguably, most important hyperparameter is labelled $\epsilon$ and defines the maximum distance between two points or, in other words, the radius of a neighborhood with respect to a point. The second hyperparameter is aptly titled \textit{minPts} ($m_{pts}$) and represents the minimum number of points that must be within distance $\epsilon$ of a point to define it as a \textit{core} point. If a point does not contain the minimum number of points within its neighborhood to define it as a core point but \textit{is} within distance $\epsilon$ from a core point then we consider it a \textit{density-reachable point} and it belongs to the cluster. Any points that cannot be reached from any other point are considered outliers or noise points. In essence, any core point forms a cluster together with all points (core or not) that are within distance $\epsilon$ from said core point. Non-core points cannot be used to reach more points and belong to the \textit{"edge"} of the cluster. The pseudocode in Listing \ref{lst:DBSCAN} below depicts an explanation of how this process works.
+\noindent \newline The \gls{dbscan} algorithm classifies points in a feature space as either core points, density-reachable points, and outliers. To best understand how this is done we must first define the two hyperparameters that are essential to the initialization of the algorithm. The first, and arguably, most important hyperparameter is labeled $\epsilon$ and defines the maximum distance between two points or, in other words, the radius of a neighborhood with respect to a point. The second hyperparameter is aptly titled \textit{minPts} ($m_{pts}$) and represents the minimum number of points that must be within distance $\epsilon$ of a point to define it as a \textit{core} point. If a point does not contain the minimum number of points within its neighborhood to define it as a core point but \textit{is} within distance $\epsilon$ from a core point then we consider it a \textit{density-reachable point} and it belongs to the cluster. Any points that cannot be reached from any other point are considered outliers or noise points. In essence, any core point forms a cluster together with all points (core or not) that are within distance $\epsilon$ from said core point. Non-core points cannot be used to reach more points and belong to the \textit{"edge"} of the cluster. The pseudocode in Listing \ref{lst:DBSCAN} below depicts an explanation of how this process works.
 
 \noindent \newline \begin{lstlisting}[float=hbt!, frame=tb, caption={The \gls{dbscan} algorithm.},label=lst:DBSCAN]
 DBSCAN(D, eps, minPts)
@@ -168,71 +179,6 @@ queryNeighborhood(P, eps)
 
 \clearpage
 
-\section{Distance Metrics}
-\label{sec:Background-Information:Distance-Metrics}
-As mentioned in section \ref{subsec:Background-Information:Clustering-Algorithms:DBSCAN}, the \gls{dbscan} algorithm as well as the \gls{hdbscan} algorithm are heavily reliant on the distance metric being used. For that reason, we explored the possibility of 2 commonly used distance metrics when working with time series data sets: Euclidean distance and Dynamic Time Warping.
-
-\subsection{Euclidean Distance}
-\label{subsec:Background-Information:Distance-Metrics:Euclidean-Distance}
-
-\begin{equation}
-    d_{euc}(p, q) = \sqrt{\sum\limits_{i=1}^{n} (p_i - q_i)^2}
-\label{eq:Euclidean-Distance}
-\end{equation}
-
-\noindent where:
-
-\begin{conditions*}
-        p, q        &   two points in the Euclidean n-space. \\
-        p_i, q_i    &   Euclidean vectors starting from the origin of the space. \\
-        n           &   n-space.
-\end{conditions*}
-
-\subsection{Dynamic Time Warping}
-\label{subsec:Background-Information:Distance-Metrics:Dynamic-Time-Warping}
-When working with time series data sets, \gls{dtw} provides us with the means of determining whether two temporal sequences exhibit any measure of similarity. To best understand how \gls{dtw} works let us assume that we are working with two sequences S and T of lengths n and m respectively. We can arrange the sequences in an $n \times m$ grid where each point (x, y) is the alignment between S[x] and T[y]. Thus, we can calculate the path with minimal distance between elements of both S and T, or what is known as a warping path as follows:
-
-\begin{equation}
-    D_{min}(S_k, T_k) = \argmin_{S_{k-1}, T_{k-1}} D_{min} (S_{k-1}, T_{k-1}) + d_{euc}(S_k, T_k | S_{k-1}, T_{k-1})
-\label{eq:DTW}
-\end{equation}
-
-\noindent \newline Furthermore, the warping path can only make the following moves:
-
-\begin{enumerate}
-    \item Horizontal moves $(x, y) \rightarrow (x, y + 1)$ -- insertion.
-    \item Vertical moves: $(x, y) \rightarrow (x + 1, y)$ -- deletion.
-    \item Diagonal moves: $(x, y) \rightarrow (x + 1, y + 1)$ -- match.
-\end{enumerate}
-
-\noindent \newline Some final notes on the implementation of \gls{dtw}:
-
-\begin{itemize}
-    \item Each index from the first sequence must be matched with one (or more) indices from the second sequence and vice versa.
-    \item The first and last index from the first sequence must be matched with the first and last index of the second sequence respectively.
-    \item The mapping of indices from the first sequence to indices of the second sequence must be monotonically increasing and vice versa such that $S_{t-1} \leq S_{t}$ and $T_{t-1} \leq T_{t}$.
-\end{itemize}
-
-\noindent Figure \ref{fig:DTW-Illustration} denotes an example of how we can calculate the \gls{dtw} path of 2 sequences of length 6. The first sequence contains the values [1, 2, 6, 3, 1, 3] and the second sequence contains the values [2, 6, 3, 1, 2, 7].
-
-\begin{figure}[hbt!]
-        \begin{adjustwidth}{-0.5cm}{-0.5cm}%
-                \myfloatalign
-                \subfloat[Accumulated cost matrix and warping path.]
-                {
-                        \includegraphics[width=0.5\textwidth]{Images/Chapter 3/DTW/DTW-Illustration-1.pdf}
-                        \label{fig:DTW-Illustration-1}
-                } \quad
-                \subfloat[DTW distance between our 2 sequences.]
-                {
-                        \includegraphics[width=0.5\textwidth]{Images/Chapter 3/DTW/DTW-Illustration-2.pdf}
-                        \label{fig:DTW-Illustration-2}
-                } \quad
-                \caption{An illustration depicting how we can use \gls{dtw} to calculate the distance between 2 sequences.}
-                \label{fig:DTW-Illustration}
-        \end{adjustwidth}
-\end{figure}
-
 \section{Forecasting Models}
 \label{sec:Background-Information:Forecasting-Models}
 The primary forecasting model that we will be utilizing in our forecasting pipeline is a hybrid \gls{cnn-lstm} network. This section serves to introduce readers to both the \gls{cnn} component as well as the \gls{lstm} component of this network.
@@ -270,6 +216,15 @@ Following every convolution operation is a \gls{relu} operation where \gls{relu}
     \label{fig:ReLU-Illustration}
 \end{figure}
 
+\noindent \newline It is worth mentioning that in contrast to the \gls{relu} activation function we will be utilizing the leaky \gls{relu} activation function (illustrated in Figure \ref{fig:Leaky-ReLU}) so as to avoid the "dying" \gls{relu} problem in which the \gls{relu} neurons of a network always output a value of 0 thus effectively not contributing anything to the learning of the network.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 5/Stage 4/Other/Leaky-ReLU.pdf}
+    \caption{Illustration of leaky \gls{relu}.}
+    \label{fig:Leaky-ReLU}
+\end{figure}
+
 \subsubsection{Max Pooling Layers}
 \label{subsubsec:Background-Information:Forecasting-Models:Convolutional-Neural-Networks:Max-Pooling-Layers}
 Inter-mingled between convolutional layers are a set of pooling layers that serve to reduce the dimensionality of each feature map while retaining the most important information. In the case of \textit{max} pooling layers, the network defines a spatial neighborhood and takes the largest element from the rectified feature map within that window. The goal of pooling layers then is to reduce the feature dimensions of our input vectors thus making them smaller and more manageable to work with while also reducing the number of parameters and computations needed to fit our network, thus minimizing the risk of overfitting. Furthermore, this renders the network invariant to small transformations, distortions and translations in the input vector by providing us with what is essentially a scale invariant representation of our vector.
@@ -280,8 +235,6 @@ Inter-mingled between convolutional layers are a set of pooling layers that serv
     \caption{An example of max pooling using a 2x2 window.}
     \label{fig:Max-Pooling-Illustration}
 \end{figure}
-
-\clearpage
 
 \subsection{Long Short-Term Memory Networks}
 \label{subsec:Background-Information:Forecasting-Models:Long-Short-Term-Memory-Networks}
@@ -305,7 +258,7 @@ The first gate that we will be taking a look at is the forget gate $(f_t)$. This
 
 \begin{figure}[hbt!]
     \centering
-    \includegraphics[width=0.75\textwidth]{Images/Chapter 3/LSTM/LSTM-Forget-Gate-Illustration.pdf}
+    \includegraphics[width=0.5\textwidth]{Images/Chapter 3/LSTM/LSTM-Forget-Gate-Illustration.pdf}
     \caption{An illustration of the forget gate in an \gls{lstm} network. Image source: \cite{Colah}  (with permission from the author).}
     \label{fig:LSTM-Forget-Gate-Illustration}
 \end{figure}
@@ -324,7 +277,7 @@ The input gate $(i_t)$ mainly serves to decide what new information will be stor
 
 \begin{figure}[hbt!]
     \centering
-    \includegraphics[width=0.75\textwidth]{Images/Chapter 3/LSTM/LSTM-Input-Gate-Illustration.pdf}
+    \includegraphics[width=0.5\textwidth]{Images/Chapter 3/LSTM/LSTM-Input-Gate-Illustration.pdf}
     \caption{An illustration of the input gate in an \gls{lstm} network. Image source: \cite{Colah} (with permission from the author).}
     \label{fig:LSTM-Input-Gate-Illustration}
 \end{figure}
@@ -344,7 +297,7 @@ The final gate is the output gate $(o_t)$ which decides what the next hidden sta
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.75\textwidth]{Images/Chapter 3/LSTM/LSTM-Output-Gate-Illustration.pdf}
+    \includegraphics[width=0.5\textwidth]{Images/Chapter 3/LSTM/LSTM-Output-Gate-Illustration.pdf}
     \caption{An illustration of the output gate in an \gls{lstm} network. Image source: \cite{Colah}  (with permission from the author).}
     \label{fig:LSTM-Output-Gate-Illustration}
 \end{figure}
@@ -372,14 +325,13 @@ The first performance metric that we will be taking a look at is the \gls{mae}. 
         n           &   total number of data points.
 \end{conditions*}
 
-\subsection{Root Mean Squared Error}
-\label{subsec:Background-Information:Performance-Metrics:Root-Mean-Squared-Error}
-The second performance metric that we will be working with is the \gls{rmse}. Its primary purpose is to serve as a cost function that our forecasting models will seek to minimize. The primary reason behind choosing \gls{rmse} as our cost function is that it penalizes larger errors. Its equation is:
+\subsection{Mean Absolute Percentage Error}
+\label{subsec:Background-Information:Performance-Metrics:Mean-Absolute-Percentage-Error}
+The second performance metric we will be taking a look at is the \glsentryfull{mape}. As it is a scale-invariant metric, its primary purpose is to allow us to assess the performance of our forecasting models across the multiple, disparate data sets we have on hand and draw comparisons between them. Its equation is:
 
 \begin{equation}
-\centering
-    \text{RMSE} = \sqrt{\frac{\sum\limits_{i = 1}^{n} (\hat{y_i} - y_i)^2}{n}}
-\label{eq:RMSE}
+    \text{MAPE} = \frac{1}{n} \sum\limits_{i = 1}^{n} \abs{\frac{\hat{y_i} - y_i}{y_i}}
+\label{eq:MAPE}
 \end{equation}
 
 \noindent where:
@@ -390,13 +342,14 @@ The second performance metric that we will be working with is the \gls{rmse}. It
         n           &   total number of data points.
 \end{conditions*}
 
-\subsection{Mean Absolute Percentage Error}
-\label{subsec:Background-Information:Performance-Metrics:Mean-Absolute-Percentage-Error}
-The final performance metric we will be taking a look at is the \glsentryfull{mape}. As it is a scale-invariant metric, its primary purpose is to allow us to assess the performance of our forecasting models across the multiple, disparate data sets we have on hand and draw comparisons between them. Its equation is:
+\subsection{Log-Cosh Loss}
+\label{subsec:Background-Information:Performance-Metrics:Log-Cosh-Loss}
+The final metric that we will be working with is the log-cosh function. Its primary purpose is to serve as a cost function that our forecasting models will seek to minimize. The primary reason behind choosing log-cosh to act as our cost function is that it is robust against the occasional wildly incorrect prediction that our networks are bound to make. Its equation is:
 
 \begin{equation}
-    \text{MAPE} = \frac{1}{n} \sum\limits_{i = 1}^{n} \abs{\frac{\hat{y_i} - y_i}{y_i}}
-\label{eq:MAPE}
+\centering
+    \text{Log-Cosh L} = \sum\limits_{i = 1}^{n} \log(\cosh{(\hat{y}_i - y_i)})
+\label{eq:Log-Cosh}
 \end{equation}
 
 \noindent where:

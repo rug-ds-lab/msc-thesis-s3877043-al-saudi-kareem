@@ -1,0 +1,152 @@
+%*******************************************************
+% Appendix
+%*******************************************************
+\appendix
+
+\chapter{Appendix - Figures}
+\label{ch:Appendix:Figures}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 4/REFIT/REFIT-House-12-Stack-Plot.pdf}
+    \caption{A sample stacked area chart showing the readings of each appliance in each hour of a day. These readings were averaged over the entirety of the data present in the data set. Data for this plot was pulled from CLEAN\_House12.csv of the \gls{refit} data set.}
+    \label{fig:REFIT-House-12-Stack-Plot}
+\end{figure}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 4//UCID/UCID-Day-of-the-Week-Count.pdf}
+    \caption{Number of samples per day of the week over the entirety of the \gls{ucid} data set.}
+    \label{fig:UCID-Day-of-the-Week-Count}
+\end{figure}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 4/UCID/UCID-Month-Count.pdf}
+    \caption{Number of samples per month over the entirety of the \gls{ucid} data set.}
+    \label{fig:UCID-Month-Count}
+\end{figure}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 4/UCID/UCID-Time-Series-Decomposition-NoSmoothing.pdf}
+    \caption{Time series decomposition performed on the \gls{ucid} data set. Data for these plots were pulled over a 6 month period that was resampled into a resolution of 15 minutes.}
+    \label{fig:UCID-Time-Series-Decomposition}
+\end{figure}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 4/REFIT/REFIT-House-12-Grangers-Causality-Matrix.pdf}
+    \caption{The complete Granger Causation matrix for the \gls{refit} data saet with all of the relevant features included.}
+    \label{fig:REFIT-House-12-Grangers-Causality-Matrix-All}
+\end{figure}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 4/UCID/UCID-Grangers-Causality-Matrix.pdf}
+    \caption{The complete Granger Causation matrix for the \gls{ucid} data set with all of the relevant features included.}
+    \label{fig:UCID-Grangers-Causality-Matrix-All}
+\end{figure}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=0.75\textwidth]{Images/Chapter 4/UCID/UCID-Grangers-Causality-Matrix-Single.png}
+    \caption{A trimmed subset of the Granger Causation matrix (Figure \ref{fig:UCID-Grangers-Causality-Matrix-All}) that displays only the relevant information with regards to our independent variables causing our target variable.}
+    \label{fig:UCID-Grangers-Causality-Matrix-Single}
+\end{figure}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 4/UCID/UCID-Mutual-Information.pdf}
+    \caption{Mutual information of our independent variables against our target variable.}
+    \label{fig:UCID-Mutual-Information-Gain}
+\end{figure}
+
+\begin{figure}[hbt!]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 5/Stage 3/UCID/UCID-GAP-Distribution.pdf}
+    \caption{Distribution of values with regards to our target variable.}
+    \label{fig:UCID-GAP-Distribution}
+\end{figure}
+
+\chapter{Appendix - Tables}
+\label{ch:Appendix:Tables}
+
+\begin{table}[hbt!]
+    \begin{adjustwidth*}{-3.0cm}{-3.0cm}%
+        \myfloatalign
+        \centering
+        \begin{tabularx}{\linewidth}{cX} \toprule
+                \tableheadline{Variable} & \tableheadline{Description}                                                                                            \\ \midrule
+                Day                      & An integer value between 1 and 31.                                                                                     \\
+                Weekday                  & An integer value between 0 and 6 denoting the different days of the week.                                              \\
+                Month                    & An integer value between 1 and 12.                                                                                     \\
+                Year                     & An integer value between 2007 and 2010.                                                                                \\
+                Hour                     & An integer value between 0 and 23.                                                                                     \\
+                Minute                   & An integer value between 0 and 45 in increments of 15.                                                                 \\
+                Season                   & An integer value between 0 and 3 where 0 denotes Spring, 1 denotes Summer, 2 denotes Fall and 3 denotes Winter.        \\
+                Holiday                  & A categorical variable that takes on an integer value of 1 when the day concerned is a public holiday and 0 otherwise. \\ \bottomrule
+        \end{tabularx}
+        \caption{List of temporal variables that are taken into consideration during the feature engineering process as outlined in Section \ref{sec:Methodology:Stage-3}.}
+        \label{tab:Temporal-variables}
+    \end{adjustwidth*}
+\end{table}
+
+\begin{table}[htb!]
+        \centering
+        \begin{tabular*}{\linewidth}{l@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c} \toprule
+                \tableheadline{Feature} & \tableheadline{P-Value} & \tableheadline{Stationary} \\ \midrule
+                AirTemp                 & 6.37e-04                & True                       \\
+                AlbedoDaily             & 4.07e-27                & True                       \\
+                Azimuth                 & 0.0                     & True                       \\
+                CloudOpacity            & 0.0                     & True                       \\
+                DewpointTemp            & 5.06e-15                & True                       \\
+                Dhi                     & 0.0                     & True                       \\
+                Dni                     & 0.0                     & True                       \\
+                Ebh                     & 0.0                     & True                       \\
+                Ghi                     & 0.0                     & True                       \\
+                GtiFixedTilt            & 0.0                     & True                       \\
+                GtiTracking             & 0.0                     & True                       \\
+                PrecipitableWater       & 3.26e-26                & True                       \\
+                RelativeHumidity        & 1.29e-23                & True                       \\
+                SnowDepth               & 1.98e-26                & True                       \\
+                SurfacePressure         & 1.29e-22                & True                       \\
+                WindDirection10m        & 0.0                     & True                       \\
+                WindSpeed10m            & 0.0                     & True                       \\
+                Zenith                  & 0.04                    & True                       \\
+                Global\_active\_power   & 0.0                     & True                       \\ \bottomrule
+        \end{tabular*}
+        \caption{The results of performing the Augmented Dicky-Fuller test on our target variable as well as the meteorological variables introduced in Section \ref{subsec:Introduction:Introduction-to-the-Data:Meteorological-Data} and outlined in Table \ref{tab:Solcast-parameters} for the \gls{ucid} data set.}
+        \label{tab:UCID-ADF-Test}
+\end{table}
+
+\begin{table}[hbt!]
+        \begin{adjustwidth*}{-3.0cm}{-3.0cm}%
+                \myfloatalign
+                \centering
+                \begin{tabularx}{\linewidth}{cX} \toprule
+                        \tableheadline{Parameter}                & \tableheadline{Description}                                                                                                                                                                                                                               \\ \midrule
+                        \gls{ghi}                                & The total irradiance received on a horizontal surface. It is the sum of the horizontal components of direct (beam) and diffuse irradiance. Units in W/m2.                                                                                                 \\
+                        \gls{ebh}                                & The horizontal component of \glsentryfull{dni}. Units in W/m2.                                                                                                                                                                                            \\
+                        \gls{dni}                                & Solar irradiance arriving in a direct line from the sun as measured on a surface held perpendicular to the sun.  Units in W/m2.                                                                                                                           \\
+                        Zenith                                   & The angle between a line perpendicular to the earth's surface and the sun (90 deg = sunrise and sunset; 0 deg = sun directly overhead). Units in degrees.
+                        \\
+                        Azimuth                                  & The angle between a line pointing due north to the sun's current position in the sky. Negative to the East. Positive to the West. 0 at due North. Units in degrees.
+                        \\
+                        Cloud Opacity                            & The measurement of how opaque the clouds are to solar radiation in the given location. Units in percentage.                                                                                                                                               \\
+                        Air Temperature                          & The air temperature (2 meters above ground level). Units in Celsius.                                                                                                                                                                                      \\
+                        Dewpoint                                 & The air dewpoint temperature (2 meters above ground level). Units in Celsius.                                                                                                                                                                             \\
+                        Relative Humidity                        & The air relative humidity (2 meters above ground level). Units in percentage.                                                                                                                                                                             \\
+                        SFC pressure                             & The air pressure at ground level. Units in hPa.                                                                                                                                                                                                           \\
+                        Wind Speed                               & The wind speed (10 meters above ground level). Units in m/s.                                                                                                                                                                                              \\
+                        Wind Direction                           & The wind direction (10 meters above ground level). This is the meteorological convention. 0 is a northerly (from the north); 90 is an easterly (from the east); 180 is a southerly (from the south); 270 is a westerly (from the west). Units in degrees. \\
+                        Preciptable Water                        & The total column preciptable water content. Units in kg/m2.                                                                                                                                                                                               \\
+                        Snow Depth                               & The snow depth liquid-water-equivalent. Units in cm.                                                                                                                                                                                                      \\
+                        \gls{gti} Horizontal Single-Axis Tracker & The total irradiance received on a sun-tracking surface.  Units in W/m2.                                                                                                                                                                                  \\
+                        \gls{gti} Fixed                          & The total irradiance received on a surface with a fixed tilt. The tilt is set to latitude of the location.  Units in W/m2.                                                                                                                                \\
+                        Albedo                                   & Average daytime surface reflectivity of visible light, expressed as a value between 0 and 1. 0 represents complete absorption. 1 represents complete reflection.                                                                                          \\ \bottomrule
+                \end{tabularx}
+                \caption{List of meteorological parameters available to us as per the Solcast data sets as outlined in Section \ref{subsec:Introduction:Introduction-to-the-Data:Meteorological-Data}.}
+                \label{tab:Solcast-parameters}
+        \end{adjustwidth*}
+\end{table}

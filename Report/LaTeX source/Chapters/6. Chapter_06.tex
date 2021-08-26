@@ -1,176 +1,147 @@
-\chapter{Methodology}
-\label{ch:Methodology}
-This paper proposes a forecasting method that utilizes dimensionality reduction and clustering techniques to group days that exhibit similarity in terms of electric consumption behaviour. Days that are grouped into the same cluster are thought to contain shared features, whether those features be temporal or meteorological or otherwise, that cause this similarity in behaviour. The formed clusters (per household) are used for 2 purposes: firstly, they will be used to train a classification model that utilizes available context information to assign a new day to the correct cluster. Secondly, and finally, a novel deep learning method will be applied on a per-cluster basis to forecast future energy consumption. An outline of the proposed method can be seen in Figure \ref{fig:Proposed-Model}.
+\chapter{Results and Discussion}
+\label{ch:Results-and-Discussion}
+Following the brief example demonstration of the method in Chapter \ref{ch:Methodology}, we extended the implementation to house 12 of the \gls{refit} data set. The subsequent sections serve to demonstrate the efficacy of both the classification step as well as the forecasting step of our method. 
+
+\section{Cluster Label Classification}
+\label{sec:Results-and-Discussion:Cluster-Label-Classification}
+The first results that we will be demonstrating are that of the classification step of our method -- refer to Table \ref{tab:Classification-results}.
+
+\begin{table}[H]
+        \myfloatalign
+        \centering
+        \begin{tabular*}{\linewidth}{c@{\extracolsep{\fill}}c@{\extracolsep}c} \toprule
+                \tableheadline{Data Set} & \tableheadline{No. of Clusters} & \tableheadline{Accuracy} \\ \midrule
+                \gls{ucid}               & 3                               & 76\%                     \\ \midrule
+                \gls{refit} - House 12   & 3                               & 66\%                     \\ \bottomrule
+        \end{tabular*}
+        \caption{Result of training, optimizing and evaluating a random forest classifier on the cluster labels obtained for each of the \gls{ucid} as well as the \gls{refit} data sets.}
+        \label{tab:Classification-results}
+\end{table}
+
+\noindent \newline Being able to correctly assign new samples into the correct cluster is imperative so as to insure the highest likelihood of achieving consistently reliable forecasting accuracy. Given that we had an equal number of 3 clusters per data set and that we were working with a (synthetic) uniform distribution of samples over the different clusters, the scores outlined in Table \ref{tab:Classification-results} are fairly good (a random predictor would achieve an accuracy of 33.3\%). The disparity in the results between the 2 data sets could predominantly be linked to the following 2 reasons:
+
+\begin{enumerate}
+    \item The \gls{ucid} data set contained a much larger number of samples (days).
+    \item The distribution of the samples over the different days of the week as well as the months is much more uniform in the \gls{ucid} data set.
+\end{enumerate}
+
+\noindent \newline Figures \ref{fig:UCID-Classification-Confusion-Matrix} and \ref{fig:REFIT-Classification-Confusion-Matrix} allow us to clearly visualize both the correct as well as the incorrect predictions made by our model. Interestingly, given that both the clusters formed for each of the \gls{ucid} as well as the \gls{refit} data set were quite similar in terms of the overall patterns that were captured, the fitted model per data set seems to be making mistakes, or otherwise incorrect predictions, of a similar magnitude with cluster 2 containing the largest number of incorrect predictions for each of the data sets and cluster 1 containing the largest amount of correct predictions.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-Classification-Confusion-Matrix-1.pdf}
+    \caption{Confusion matrix - \gls{ucid}.}
+    \label{fig:UCID-Classification-Confusion-Matrix}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{Images/Chapter 6/REFIT/REFIT-Classification-Confusion-Matrix-1.pdf}
+    \caption{Confusion matrix - \gls{refit}.}
+    \label{fig:REFIT-Classification-Confusion-Matrix}
+\end{figure}
+
+% \begin{figure}[H]
+%     \begin{adjustwidth}{-3.0cm}{-3.0cm}%
+%             \myfloatalign
+%             \subfloat[Confusion matrix - \gls{ucid}.]
+%             {
+%                     \includegraphics[width=0.7\textwidth]{Images/Chapter 6/UCID/UCID-Classification-Confusion-Matrix.pdf}
+%                     \label{fig:UCID-Classification-Confusion-Matrix}
+%             } \quad
+%             \subfloat[Confusion matrix - \gls{refit}.]
+%             {
+%                     \includegraphics[width=0.7\textwidth]{Images/Chapter 6/REFIT/REFIT-Classification-Confusion-Matrix.pdf}
+%                     \label{fig:REFIT-Classification-Confusion-Matrix}
+%             } \quad
+%             \caption{Confusion matrices for each of the \gls{ucid} as well as the \gls{refit} data sets.}
+%     \end{adjustwidth}
+% \end{figure}
+
+\section{Forecasting Accuracy}
+\label{sec:Results-and-Discussion:Forecasting-Accuracy}
+When compared to the current state-of-the-art in modern literature, particularly with regards to data available on hand pertaining to the \gls{ucid} data set, our method yields superior forecasting accuracy at variable resolution. Table \ref{tab:Forecasting-results} presents a performance comparison of common models discussed in the literature and our method. We note that, at the time of writing, no published results attempting to forecast energy consumption on the \gls{refit} data set could be found and thus, barre attempting to recreate the results ourselves, we have had to omit them from Table \ref{tab:Forecasting-results} for the time being.
+
+\begin{table}[H]
+        \myfloatalign
+        \centering
+        \begin{tabular*}{\linewidth}{c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c} \toprule
+                \tableheadline{Data Set}     & \tableheadline{Method} & \tableheadline{MAE (kW)} & \tableheadline{RMSE (kW)} & \tableheadline{MAPE} \\ \midrule
+                \multirow{3}{*}{\gls{ucid}}  & LSTM \cite{Kim}                   & 0.62                     & 0.86                      & 51.45\%              \\
+                                             & CNN-LSTM \cite{Kim}               & 0.34                     & 0.61                      & 34.84\%              \\
+                                             & Proposed               & 0.14                     & 0.19                      & 21.62\%              \\ \midrule
+                \multirow{3}{*}{\gls{refit}} & LSTM                   & N/A                      & N/A                       & N/A                  \\
+                                             & CNN-LSTM               & N/A                      & N/A                       & N/A                  \\
+                                             & Proposed               & 0.11                     & 0.17                      & 25.77\%              \\ \bottomrule
+        \end{tabular*}
+        \caption{Performance comparison of different methods on each of \gls{ucid} as well as the \gls{refit} data set. Note that these results were obtained for one-step-ahead prediction at a resolution of 15 minutes over the raw data sets.}
+        \label{tab:Forecasting-results}
+\end{table}
+
+\noindent \newline Another component that is frequently (attempted to be) forecasted in the literature is the trend component obtained as part of a time-series decomposition step that was previously discussed in Chapter \ref{ch:Exploratory-Data-Analysis}. We attempted to tackle this problem ourselves and applied the method to both the smoothed, trend component of the \gls{ucid} data set as well as house 12 of the \gls{refit} data set, the results of which can be seen in Table \ref{tab:Forecasting-results-2}. We note that the results here are considerably good, achieving a \gls{mape} of $\sim 2\%$ for both  data sets.
+
+\begin{table}[H]
+        \myfloatalign
+        \centering
+        \begin{tabular*}{\linewidth}{c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c} \toprule
+                \tableheadline{Data Set} & \tableheadline{MAE (kW)} & \tableheadline{RMSE (kW)} & \tableheadline{MAPE} \\ \midrule
+                \gls{ucid}               & 0.02                     & 0.02                      & 2.58\%               \\ \midrule
+                \gls{refit}              & 0.02                     & 0.02                      & 4.32\%                \\ \bottomrule
+        \end{tabular*}
+        \caption{Performance metrics obtained when applying our method on the trend component of each of the \gls{ucid} as well as the \gls{refit} data sets to obtain a one-step-ahead prediction.}
+        \label{tab:Forecasting-results-2}
+\end{table}
+
+\noindent \newline Finally, we attempted to extend our model by scaling up the number of predictions from a singular step (15 minutes into the future in this scenario) to a total of 12 sequential steps (leading to a grand total of 3 hours being forecasted given the previously mentioned step size of 15 minutes) ,the results of which can be seen in Table \ref{tab:Forecasting-results-3}. Oddly enough, for both the \gls{ucid} data set as well as house 12 of the \gls{refit} data set, we achieved marginal improvements with regards to \gls{mape} scores when attempting to build twelve-step-ahead forecasts on their respective trend components. On the other hand, \gls{mape} scores for the raw data for each of our data sets fell somewhat substantially, with an overall loss of about $\sim 10\%$, when moving from one-step-ahead forecasts to twelve-step-ahead forecasts which is more in line with what one could expect in this scenario.
+
+\begin{table}[H]
+        \myfloatalign
+        \centering
+        \begin{tabular*}{\linewidth}{c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c} \toprule
+                \tableheadline{Data Set}     & \tableheadline{Method} & \tableheadline{MAE (kW)} & \tableheadline{RMSE (kW)} & \tableheadline{MAPE} \\ \midrule
+                \multirow{2}{*}{\gls{ucid}}  & Raw                    & 0.37                     & 0.59                      & 38.23\%              \\
+                                             & Trend                  & 0.02                     & 0.02                      & 3.15\%                \\ \midrule
+                \multirow{2}{*}{\gls{refit}} & Raw                    & 0.17                     & 0.31                      & 39.75\%              \\
+                                             & Trend                  & 0.02                     & 0.02                      & 4.75\%                \\ \bottomrule
+        \end{tabular*}
+        \caption{Performance metrics obtained when applying our method on both the raw data as well as trend component of each of the \gls{ucid} as well as the \gls{refit} data sets to obtain twelve-step-ahead predictions.}
+        \label{tab:Forecasting-results-3}
+\end{table}
+
+\noindent \newline To further showcase, or otherwise visualize, the capabilities of our model we present Figures \ref{fig:UCID-RAW-1-Step-Ahead-Forecast-Result}, \ref{fig:UCID-Trend-1-Step-Ahead-Forecast-Result}, \ref{fig:REFIT-RAW-1-Step-Ahead-Forecast-Result} and \ref{fig:REFIT-Trend-1-Step-Ahead-Forecast-Result} that serve to illustrate one-step-ahead forecasts generated for a subset of each of the \gls{ucid} data set as well as house 12 of the \gls{refit} data set. These figures illustrate predictions made by each of our individual models on both the raw data as well as the trend component for each of the \gls{refit} data set as well as the \gls{ucid} data set over a period of 1 day out of our test set. The days chosen for these illustrations were completely random.
 
 \begin{figure}[H]
     \begin{adjustwidth}{-3.0cm}{-3.0cm}%
-        \centering
-        \includegraphics[width=\linewidth]{Images/Chapter 6/Proposed-Model.pdf}
-        \caption{Proposed daily profile extraction and load forecasting model.}
-        \label{fig:Proposed-Model}
+            \myfloatalign
+            \subfloat[\gls{ucid} - Raw data.]
+            {
+                    \includegraphics[width=0.7\textwidth]{Images/Chapter 6/UCID/UCID-RAW-1-Step-Ahead-Forecast-Result.pdf}
+                    \label{fig:UCID-RAW-1-Step-Ahead-Forecast-Result}
+            } \quad
+            \subfloat[\gls{ucid} - Trend.]
+            {
+                    \includegraphics[width=0.7\textwidth]{Images/Chapter 6/UCID/UCID-Trend-1-Step-Ahead-Forecast-Result.pdf}
+                    \label{fig:UCID-Trend-1-Step-Ahead-Forecast-Result}
+            } \quad
+            \caption{Showcasing the capabilities of our method in making one-step-ahead predictions on the \gls{ucid} data set.}
     \end{adjustwidth}
 \end{figure}
 
-\section{Stage 1 - Data Collection and Cleaning}
-\label{sec:Methodology:Stage-1}
-\begin{adjustwidth}{-1.65cm}{0.0cm}%
-    \begin{enumerate}[label=Step 1.\arabic*:, leftmargin=*]
-    \setlength\itemsep{1em}
-        \item As mentioned prior, this paper utilizes available historical data with regards to energy consumption on an individual household basis. In reality, as part of stage 1 of our forecasting pipeline, time series data of daily electricity consumption would need to be collected from an individual household meter for an adequate amount of time at an ideal resolution so as to obtain acceptable results.
-        \item After collecting, or in our case loading in, the data we perform common preprocessing techniques to account for noisy or otherwise missing data that occurred during the transmission of the data from the meters. In our case, the available data was resampled into a resolution of 15 minutes and any days that contained less than 96 values (given that there are 96 15 minute chunks in a day) were dropped from our data set. All other days that contained \gls{nan} values were also not considered and subsequently dropped from our data set.
-    \end{enumerate}
-\end{adjustwidth}
+\begin{figure}[H]
+    \begin{adjustwidth}{-3.0cm}{-3.0cm}%
+            \myfloatalign
+            \subfloat[\gls{refit} - Raw data.]
+            {
+                    \includegraphics[width=0.7\textwidth]{Images/Chapter 6/REFIT/REFIT-RAW-1-Step-Ahead-Forecast-Result.pdf}
+                    \label{fig:REFIT-RAW-1-Step-Ahead-Forecast-Result}
+            } \quad
+            \subfloat[\gls{refit} - Trend.]
+            {
+                    \includegraphics[width=0.7\textwidth]{Images/Chapter 6/REFIT/REFIT-Trend-1-Step-Ahead-Forecast-Result.pdf}
+                    \label{fig:REFIT-Trend-1-Step-Ahead-Forecast-Result}
+            } \quad
+            \caption{Showcasing the capabilities of our method in making one-step-ahead predictions on the \gls{refit} data set.}
+    \end{adjustwidth}
+\end{figure}
 
-\section{Stage 2 - Dimensionality Reduction and Clustering}
-\label{sec:Methodology:Stage-2}
-\begin{adjustwidth}{-1.65cm}{-0.0cm}%
-    \begin{enumerate}[label=Step 2.\arabic*:, leftmargin=*]
-    \setlength\itemsep{1em}
-        \item Given that each day in our data set is represented by 96 dimensions, each dimension comprising mean active power consumption over a time period of 15 minutes, the first logical step to undertake would be to transform the data in a manner that enables our clustering techniques to more efficiently determine which days exhibit similarity in terms of electric consumption behaviour. This \textit{dimensionality reduction} step comprises 2 parts that are outlined in the substeps below.
-        
-        \noindent \newline To start things off we divide each day into 5 different periods as follows:
-            \begin{enumerate}[label=\arabic*:, leftmargin=.75cm]
-                \item Morning: 06:00 - 11:00
-                \item Late morning/afternoon: 11:00 - 15:00
-                \item Late afternoon/early evening: 15:00 - 20:30
-                \item Evening: 20:30 - 23:30
-                \item Late evening/early morning: 23:30 - 06:00
-            \end{enumerate}
-        
-        \noindent \newline Following that, we represent each period by its respective mean, minimum, maximum value as well as its standard deviation. The outcome of performing this is that each day is now represented by a total of 20 dimensions rather than the initial 96 which is a reduction of $\sim 80\%$.
-        
-        \noindent \newline We can reduce this even further, and even visualize our data in 2 or 3 dimensions, by making use of either of the \gls{t-sne} or \gls{umap} algorithms outlined in Section \ref{subsec:Background-Information:Dimension-Reduction:t-Distributed-Stochastic-Neighbor-Embedding}. The most important hyperparameter to tune for either algorithm is the \textit{perplexity} hyperparameter for the \gls{t-sne} algorithm and the equivalent $n_{\text{neighbors}}$ hyperparameter for the \gls{umap} algorithm. During our research, we found that an optimal value for either of these hyperparameters is $N^{\frac{1}{2}}$ where N is the number of samples present in the data set. To better understand each of the steps of our proposed model, we will begin a series of visualizations showcasing each step as performed on the \gls{ucid} data set starting off with the output of performing the \gls{t-sne} algorithm which can be seen in Figure \ref{fig:UCID-t-SNE}.
-        
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-t-SNE.pdf}
-            \caption{The output of performing the \gls{t-sne} algorithm on the 20-dimensional \gls{ucid} data set. Each point in this figure represents a single sample (or day) within our data set mapped onto a 2-dimensional surface.}
-            \label{fig:UCID-t-SNE}
-        \end{figure}
-        
-        \item After performing the dimensionality reduction step on our data, we proceed to cluster the resulting output by applying the \gls{hdbscan} algorithm, as outlined in Section \ref{subsec:Background-Information:Clustering-Algorithms:HDBSCAN}. As previously mentioned, the only important parameters that need to be passed to the \gls{hdbscan} algorithm are the minimum size we expect each cluster to be. In this case we set that value to $\frac{1}{10}\left(N\right)$ where N is the number of samples present in the data set. Our reasoning for selecting this value is predominantly based on the adequate results observed by \citet{Kong} in their implementation of the \gls{dbscan} algorithm in a similar setting whilst utilizing a similar selection in terms of hyperparameter settings. The other hyperparameter we choose to tune is the \textit{min\_samples} hyperparameter which, in layman's terms, denotes how conservative we would like to be with our clustering in terms of restricting clusters to progressively more dense areas and classifying samples from our data set as noise. In our case, an arbitrary value of 15 was selected, in contrast to the default value that sets $min\_samples = min\_cluster\_size$. The results of performing the \gls{hdbscan} algorithm on our 2-dimensional representation of the \gls{ucid} data set (represented by Figure \ref{fig:UCID-t-SNE}) can be seen in Figure \ref{fig:UCID-HDBSCAN}.
-        
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-HDBSCAN.pdf}
-            \caption{The output of performing the \gls{hdbscan} algorithm on the 2-dimensional \gls{ucid} data set previously seen in Figure \ref{fig:UCID-t-SNE}.}
-            \label{fig:UCID-HDBSCAN}
-        \end{figure}
-        
-        \noindent \newline For the sake of comparison, we present the output of applying the k-means clustering algorithm (assuming $k = 3$) on the same 2-dimensional representation of the \gls{ucid} data set. This can be seen in Figure \ref{fig:UCID-K-Means}. We note immediately the capability of the \gls{hdbscan} algorithm in capturing a better representation of the clusters present in our 2-dimensional representation of the \gls{ucid} data set. The representation of outliers as noise points and not having to have a priori knowledge on the number of clusters present in the data we are working with is a definite pro as well further compounding our choice of clustering algorithm in our proposed model.
-        
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-K-Means.pdf}
-            \caption{The output of performing the k-means algorithm on the 2-dimensional \gls{ucid} data set previously seen in Figure \ref{fig:UCID-t-SNE}.}
-            \label{fig:UCID-K-Means}
-        \end{figure}
-        
-        \item Visualizing, or otherwise manually inspecting, the clusters we obtain as a result of our application of the \gls{hdbscan} algorithm is necessary so that we maybe be better able to understand whether our clustering algorithm truly captures the habits of the individuals residing in the households we are working with. The first step in our analysis of the resulting clusters would be to plot the averaged power consumption on a per cluster basis so that we may be able to clearly visualize the patterns in power consumption per cluster. An example of this, in line with the previous examples showcasing our proposed model on the \gls{ucid} data set, can be seen in Figure \ref{fig:UCID-HDBSCAN-V1}. We note that, in this example, a subset of our data (24 samples in total), were recorded as noise by the \gls{hdbscan} algorithm. Inspecting these samples manually lead to the confirmation that, of the 4 year's worth of data, these 24 days were the only days that exhibited no tangible shift in terms of power consumption throughout the entirety of the day; however, this is not explicitly outlined in the documentation of the \gls{ucid} data set. This can be seen as a more or less flat line in Figure \ref{fig:UCID-HDBSCAN-V1}.
-    
-        \begin{figure}[hbt!]
-            \centering
-            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-HDBSCAN-V1.pdf}
-            \caption{Average power consumption per hour of the day for each of the resulting clusters obtained after utilizing the \gls{hdbscan} algorithm on our 2-dimensional representation of the \gls{ucid} data set.}
-            \label{fig:UCID-HDBSCAN-V1}
-        \end{figure}
-        
-        \noindent \newline Following this, Figures \ref{fig:UCID-HDBSCAN-V2} and \ref{fig:UCID-HDBSCAN-V3} help us visualize the distribution of the clusters over the months of the year as well as the days of the week to ascertain whether any of the clusters present any correlation with these temporal variables. Given that the initial spread of the data throughout the months of the year and days of the week of the \gls{ucid} were relatively uniform, we should not see any bias towards any particular month or day in either Figure \ref{fig:UCID-HDBSCAN-V2} or Figure \ref{fig:UCID-HDBSCAN-V3} respectively.
-        
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-HDBSCAN-V2.1.pdf}
-            \caption{Distribution of the clusters over the different months of the year.}
-            \label{fig:UCID-HDBSCAN-V2}
-        \end{figure}
-        
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-HDBSCAN-V3.1.pdf}
-            \caption{Distribution of the clusters over the different days of the week.}
-            \label{fig:UCID-HDBSCAN-V3}
-        \end{figure}
-        
-        \noindent \newline At a glance, we notice that clusters 1 and 2 are more likely to occur on the weekdays with cluster 3 taking over the majority share of the weekend which tends to explain the more consistent draw in power throughout the entirety of the day for samples that belong to cluster 3. Furthermore, samples in cluster 1 tend to gravitate towards the warmer, summery months peaking in terms of number occurrences in the month of July while samples in clusters 2 and 3 exhibit a more uniform spread over the remainder of the colder months which could explain the lower average draw in power present in samples that belong to cluster 1 being a result of the owners of the home not being in as often or potentially not needing to make use of appliances to heat up their home (we note that this data was collected in Sceaux, France that experiences a warm season of $\sim \! 3$  months with otherwise, generally, cooler temperatures). 
-        
-        \begin{figure}[hbt!]
-            \centering
-            \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-HDBSCAN-V4.pdf}
-            \caption{Spread in number of samples per cluster label.}
-            \label{fig:UCID-HDBSCAN-V4}
-        \end{figure}
-        
-        \noindent \newline \textit{N.B.: It is worth noting that performing these same steps on households from within the \gls{refit} data set exhibit similar results.}
-    \end{enumerate}
-\end{adjustwidth}
-
-\section{Stage 3 - Further Data Preprocessing}
-\label{sec:Methodology:Stage-3}
-\begin{adjustwidth}{-1.65cm}{-0.0cm}%
-    \begin{enumerate}[label=Step 3.\arabic*:, leftmargin=*]
-    \item The details pertaining to the majority of the steps undertaken throughout the entirety of stage 3 of the proposed model have, to an extent, been explained in-depth during the \gls{eda} performed in Sections \ref{sec:Exploratory-Data-Analysis:REFIT} and \ref{sec:Exploratory-Data-Analysis:UCID}. Nonetheless, a brief summary will be provided as part of Chapter \ref{ch:Methodology}. The first step undertaken, again on a per-cluster basis, is to append both temporal data as well as meteorological data to our data sets. Table \ref{tab:Temporal-variables} pertains to the temporal variables that we will be taken into consideration as part of this feature engineering step while Table \ref{tab:Solcast-parameters} pertains to the obtained, historical meteorological data that concern the regions associated with our data sets. Incidentally, as outlined in Table \ref{tab:Temporal-variables}, the temporal variables we have chosen to append do not hold much value given their current format. This is due mostly in part to their cyclical nature (think of how the 23rd hour of the day is rather close to hours 0 and 1). To handle this we can encode our temporal variables (for example, through the use of both the sine and cosine function) in an attempt to transpose our linear interpretation of time into a cyclical state that can be better interpreted by our deep learning model further down the line. The result of performing this so-called encoding can be seen in both Figures \ref{fig:Temporal-Illustration-1} and \ref{fig:Temporal-Illustration-2}.
-    
-    \begin{figure}[H]
-        \begin{adjustwidth}{-3.0cm}{-3.0cm}%
-                \myfloatalign
-                \subfloat[Representing the time of the day as a combination of both sine and cosine waves. ]
-                {
-                        \includegraphics[width=0.7\textwidth]{Images/Chapter 6/Temporal_Illustration/Temporal_Illustration_1.pdf}
-                        \label{fig:Temporal-Illustration-1}
-                } \quad
-                \subfloat[Visualizing our cyclical encoding of the time of day.]
-                {
-                        \includegraphics[width=0.7\textwidth]{Images/Chapter 6/Temporal_Illustration/Temporal_Illustration_2.pdf}
-                        \label{fig:Temporal-Illustration-2}
-                } \quad
-                \caption{By utilizing a combination of the sine function and the cosine function, we eliminate the possibility that two different times would receive the same value had we used either function independently. The combination of both functions can be thought of as an artifical 2-axis coordinate system that represents the time of day.}
-        \end{adjustwidth}
-    \end{figure}
-    
-    \item Following the feature engineering process, the feature selection process (or feature minimization process), heavily revolves around minimizing the overall number of features that do not serve as good predictors of our target variable. This has been explored predominantly in Sections \ref{subsec:Exploratory-Data-Analysis:REFIT:Causality-and-Correlation} and \ref{subsec:Exploratory-Data-Analysis:UCID:Causality-and-Correlation}. To summarize on the steps undertaken in the sections mentioned prior -- we performed a series of tests to determine whether our variables (temporal or meteorological) present a significant level of, independent (or combinatorial), correlation or causation against our target variable for each of the \gls{refit} and \gls{ucid} data sets. The primary tests conducted revolved around the concepts of Granger Causality and mutual information gain although other factors (such as a per-variable variance threshold) were also looked into. In lieu of repeating content and prolonging this section, we refer the reader to the results we procured in the previously mentioned sections.
-    
-    \item When taking our target variable into consideration, the notion of outliers (and how to deal with them), is inevitable. Scaling the values in such a fashion that accounts for outliers is one possibility whilst defining a threshold and trimming outlier values is another possibility. Alternatively, leaving them in is another possibility as some level of noise is unavoidable in the data collection process and training our models on unrealistically curated data does not serve to produce an accurate representation of a real-life scenario in which a model of this calibre could be applied. Nonetheless, we explore a few possibilities with respect to dealing with outlier values. One possibility, assuming a Gaussian distribution of the values of our target variable, would be to remove all values that fall a pre-defined number of standard deviations, generally 2 or 3, away from the mean. Unfortunately, the distribution of our target variable do not fall under this pre-condition (as seen in Figure \ref{fig:UCID-GAP-Distribution}) and so this is not a feasible option. Another method, explored during prior, related research \cite{Kareem}, worked on the basis of defining an upper and lower bound based on the \gls{iqr}. The \gls{iqr} is calculated as the difference between the 75th (Q3) and 25th (Q1) percentiles of the data and comprises the box in a traditional box and whiskers plot. Using the \gls{iqr} we can define outliers as any values that are a pre-defined factor below the 25th percentile or above the 75th percentile as follows:
-    
-    \begin{equation}
-        Q1 - (1.5 * IQR) < x < Q3 + (1.5 * IQR)
-    \label{eq:IQR-Outliers}
-    \end{equation}
-    
-    \noindent \newline Figures \ref{fig:UCID-Box-and-Whiskers-GAP-Out} and \ref{fig:UCID-Box-and-Whiskers-GAP-NoOut} represent the distribution of values for our target variable over the different months of the year both before and after removing outliers respectively.
-    
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=\textwidth]{Images/Chapter 6/UCID/UCID-GAP-Distribution.pdf}
-        \caption{Distribution of values with regards to our target variable.}
-        \label{fig:UCID-GAP-Distribution}
-    \end{figure}
-    
-    \begin{figure}[hbt!]
-        \begin{adjustwidth}{-3.0cm}{-3.0cm}%
-                \myfloatalign
-                \subfloat[Before removing outliers.]
-                {
-                        \includegraphics[width=0.7\textwidth]{Images/Chapter 6/UCID/UCID-Box-and-Whiskers-GAP-Out.pdf}
-                        \label{fig:UCID-Box-and-Whiskers-GAP-Out}
-                } \quad
-                \subfloat[After removing outliers.]
-                {
-                        \includegraphics[width=0.7\textwidth]{Images/Chapter 6/UCID/UCID-Box-and-Whiskers-GAP-NoOut.pdf}
-                        \label{fig:UCID-Box-and-Whiskers-GAP-NoOut}
-                } \quad
-                \caption{Illustrating the distribution of values with respect to the global active power of the \gls{ucid} data set both before and after removing outlier values as defined by Equation \ref{eq:IQR-Outliers}.}
-        \end{adjustwidth}
-    \end{figure}
-    
-    \noindent \newline \textit{Smoothing}
-    \end{enumerate}
-\end{adjustwidth}
-
-\section{Stage 4 - Training and Testing}
-\label{sec:Methodology:Stage-4}
-
-\subsection{Stage 4.1 - Classification Tree}
-\label{subsec:Methodology:Stage-4:Classification-Tree}
-
-\subsection{Stage 4.2 - CNN-LSTM Network}
-\label{subsec:Methodology:Stage-4:CNN-LSTM-Network}
+\noindent \newline \textit{N.B. we note that the results obtained as part of Section \ref{sec:Results-and-Discussion:Forecasting-Accuracy} are the averaged results obtained from training, optimizing and assessing multiple models, one for each of the respective clusters obtained as part of stage 2 of our method. Furthermore, all results were obtained at a resampled resolution of 15 minutes per time-step; however, similar results have been observed for variable time resolutions (1 minute, 1 hour etc.)}
