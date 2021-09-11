@@ -108,7 +108,7 @@ When compared to the current state-of-the-art in modern literature, particularly
         \label{tab:Forecasting-results-3}
 \end{table}
 
-\noindent \newline To further showcase, or otherwise visualize, the capabilities of our model we present Figures \ref{fig:UCID-RAW-1-Step-Ahead-Forecast-Result}, \ref{fig:UCID-Trend-1-Step-Ahead-Forecast-Result}, \ref{fig:REFIT-RAW-1-Step-Ahead-Forecast-Result} and \ref{fig:REFIT-Trend-1-Step-Ahead-Forecast-Result} that serve to illustrate one-step-ahead forecasts generated for a subset of each of the \gls{ucid} data set as well as house 12 of the \gls{refit} data set. These figures illustrate predictions made by each of our individual models on both the raw data as well as the trend component for each of the \gls{refit} data set as well as the \gls{ucid} data set over a period of 1 day out of our test set. The days chosen for these illustrations were completely random.
+\noindent \newline To further showcase, or otherwise visualize, the capabilities of our model we present Figures \ref{fig:UCID-RAW-1-Step-Ahead-Forecast-Result}, \ref{fig:UCID-Trend-1-Step-Ahead-Forecast-Result}, \ref{fig:REFIT-RAW-1-Step-Ahead-Forecast-Result} and \ref{fig:REFIT-Trend-1-Step-Ahead-Forecast-Result} that serve to illustrate one-step-ahead forecasts generated for a subset of each of the \gls{ucid} data set as well as house 12 of the \gls{refit} data set. These figures illustrate predictions made by each of our individual models on both the raw data as well as the trend component for each of the \gls{refit} data set as well as the \gls{ucid} data set over a period of 1 day out of our test set.
 
 \begin{figure}[H]
     \begin{adjustwidth}{-3.0cm}{-3.0cm}%
@@ -143,5 +143,7 @@ When compared to the current state-of-the-art in modern literature, particularly
             \caption{Showcasing the capabilities of our method in making one-step-ahead predictions on the \gls{refit} data set.}
     \end{adjustwidth}
 \end{figure}
+
+\noindent \newline A cursory glance at Figures \ref{fig:UCID-Trend-1-Step-Ahead-Forecast-Result} and \ref{fig:REFIT-Trend-1-Step-Ahead-Forecast-Result} shows us that our model seems to excel at making one step predictions on the trend component of the \gls{ucid} data set while the predictions being made for the trend component of the \gls{refit} data set seem to be slightly less accurate. When considering the raw data for each of the data sets (Figures \ref{fig:UCID-RAW-1-Step-Ahead-Forecast-Result} and \ref{fig:REFIT-RAW-1-Step-Ahead-Forecast-Result}) the differences are less pronounced and it seems that the model is capable of making accurate predictions one step into the future. This might vary in between days though and, given that the days chosen for these illustrations were completely random, it might be the case that the model performs better (or worse).
 
 \noindent \newline \textit{N.B. we note that the results obtained as part of Section \ref{sec:Results-and-Discussion:Forecasting-Accuracy} are the averaged results obtained from training, optimizing and assessing multiple models, one for each of the respective clusters obtained as part of stage 2 of our method. Furthermore, all results were obtained at a resampled resolution of 15 minutes per time-step; however, similar results have been observed for variable time resolutions (1 minute, 1 hour etc.)}
